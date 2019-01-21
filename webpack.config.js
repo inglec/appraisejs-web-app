@@ -2,6 +2,9 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
+  devServer: {
+    historyApiFallback: true
+  },
   module: {
     rules: [
       {
@@ -29,8 +32,10 @@ module.exports = {
   ],
   resolve: {
     alias: {
+      'appraisejs-root': __dirname,
       'appraisejs-components': path.resolve(__dirname, './src/components'),
-      'appraisejs-modules': path.resolve(__dirname, './src/modules')
+      'appraisejs-modules': path.resolve(__dirname, './src/modules'),
+      'appraisejs-utils': path.resolve(__dirname, './src/utils')
     }
   }
 };
