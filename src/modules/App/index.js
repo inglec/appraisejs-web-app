@@ -21,7 +21,10 @@ const getAccessToken = (code) => {
   return Axios.post(`${config.serverUrl}/authenticate`, { code })
     .then((response) => {
       if ('access_token' in response.data) {
-        return Promise.resolve(response.data);
+        return Promise.resolve({
+          token: response.data.access_token,
+          type: response.data.token_type
+        });
       }
       return Promise.reject(response.data);
     });
@@ -33,16 +36,16 @@ const getUserInstallations = (tokenType, accessToken) => {
       'Accept': 'application/vnd.github.machine-man-preview+json',
       'Authorization': `${tokenType} ${accessToken}`
     }
-  });
+  }).then(response => Promise.resolve(response.data.installations));
 };
 
-const getEndpoint = (tokenType, accessToken) => {
-  return Axios.get('https://api.github.com/user/installations', {
+const getAccessibleRepos = (tokenType, accessToken, installationId) => {
+  return Axios.get(`https://api.github.com/user/installations/${installationId}/repositories`, {
     headers: {
       'Accept': 'application/vnd.github.machine-man-preview+json',
       'Authorization': `${tokenType} ${accessToken}`
     }
-  });
+  }).then(response => Promise.resolve(response.data));
 };
 
 const handleErrors = (err) => {
@@ -56,15 +59,19 @@ const Callback = (props) => {
 
   // Exchange code for access token.
   getAccessToken(code)
-    .then(response => getEndpoint(response.token_type, response.access_token))
-    .then(response => console.log(response.data.installations))
+    .then(({ token, type }) => {
+      getUserInstallations(type, token)
+        .then(installations => getAccessibleRepos(type, token, installations[0].id))
+        .then(console.log)
+        .catch(handleErrors);
+    })
+    // TODO: MZake specific to access token.
     .catch(handleErrors);
 
   // if (url.searchParams.get('state') !== stateString) {
   //   console.log(stateString, url.searchParams.get('state'));
   //   return <p>Something is wrong with the state string</p>;
   // }
-
   return <p>Code: {code}</p>;
 };
 
