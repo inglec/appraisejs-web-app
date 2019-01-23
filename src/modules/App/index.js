@@ -36,6 +36,15 @@ const getUserInstallations = (tokenType, accessToken) => {
   });
 };
 
+const getEndpoint = (tokenType, accessToken) => {
+  return Axios.get('https://api.github.com/user/installations', {
+    headers: {
+      'Accept': 'application/vnd.github.machine-man-preview+json',
+      'Authorization': `${tokenType} ${accessToken}`
+    }
+  });
+};
+
 const handleErrors = (err) => {
   console.log('error');
   console.log(err);
@@ -47,7 +56,7 @@ const Callback = (props) => {
 
   // Exchange code for access token.
   getAccessToken(code)
-    .then(response => getUserInstallations(response.token_type, response.access_token))
+    .then(response => getEndpoint(response.token_type, response.access_token))
     .then(response => console.log(response.data.installations))
     .catch(handleErrors);
 
