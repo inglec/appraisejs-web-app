@@ -3,6 +3,7 @@ const path = require('path');
 
 module.exports = {
   devServer: {
+    // Redirect all requests to "index.html".
     historyApiFallback: true
   },
   module: {
@@ -33,8 +34,10 @@ module.exports = {
   resolve: {
     alias: {
       'appraisejs-root': __dirname,
+      'appraisejs-containers': path.resolve(__dirname, './src/containers'),
       'appraisejs-components': path.resolve(__dirname, './src/components'),
       'appraisejs-modules': path.resolve(__dirname, './src/modules'),
+      'appraisejs-redux': path.resolve(__dirname, './src/redux'),
       'appraisejs-utils': path.resolve(__dirname, './src/utils')
     }
   }

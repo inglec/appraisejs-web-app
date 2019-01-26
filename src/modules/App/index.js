@@ -1,103 +1,51 @@
-import Axios from 'axios';
+import PropTypes from 'prop-types';
 import React from 'react';
 import {
   BrowserRouter,
   Link,
-  Route
+  Redirect,
+  Route,
+  Switch,
 } from 'react-router-dom';
 
-import config from 'appraisejs-root/config.js';
+import PrivateRoute from 'appraisejs-components/PrivateRoute';
+import Callback from 'appraisejs-containers/Callback';
 
-import { appendUrlParams } from 'appraisejs-utils/requests.js';
-// import { genRandomString } from 'appraisejs-utils/strings.js';
-
-// const stateString = getRandomString();
-const oAuthUrl = appendUrlParams('https://github.com/login/oauth/authorize', {
-  client_id: config.clientId,
-  // state: stateString
-});
-
-const getAccessToken = (code) => {
-  return Axios.post(`${config.serverUrl}/authenticate`, { code })
-    .then((response) => {
-      if ('access_token' in response.data) {
-        return Promise.resolve({
-          token: response.data.access_token,
-          type: response.data.token_type
-        });
-      }
-      return Promise.reject(response.data);
-    });
-};
-
-const getUserInstallations = (tokenType, accessToken) => {
-  return Axios.get('https://api.github.com/user/installations', {
-    headers: {
-      'Accept': 'application/vnd.github.machine-man-preview+json',
-      'Authorization': `${tokenType} ${accessToken}`
-    }
-  }).then(response => Promise.resolve(response.data.installations));
-};
-
-const getAccessibleRepos = (tokenType, accessToken, installationId) => {
-  return Axios.get(`https://api.github.com/user/installations/${installationId}/repositories`, {
-    headers: {
-      'Accept': 'application/vnd.github.machine-man-preview+json',
-      'Authorization': `${tokenType} ${accessToken}`
-    }
-  }).then(response => Promise.resolve(response.data));
-};
+import { oAuthUrl } from 'appraisejs-utils/githubApi.js';
 
 const handleErrors = (err) => {
   console.log('error');
   console.log(err);
 };
 
-const Callback = (props) => {
-  const url = new URL(window.location.href);
-  const code = url.searchParams.get('code');
+const Installations = () => {
+  return <h1>My Installations</h1>;
+}
 
-  // Exchange code for access token.
-  getAccessToken(code)
-    .then(({ token, type }) => {
-      getUserInstallations(type, token)
-        .then(installations => getAccessibleRepos(type, token, installations[0].id))
-        .then(console.log)
-        .catch(handleErrors);
-    })
-    // TODO: MZake specific to access token.
-    .catch(handleErrors);
-
-  // if (url.searchParams.get('state') !== stateString) {
-  //   console.log(stateString, url.searchParams.get('state'));
-  //   return <p>Something is wrong with the state string</p>;
-  // }
-  return <p>Code: {code}</p>;
-};
-
-const Test = (props) => {
-  return <p>{JSON.stringify(props.match, null, 2)}</p>;
+const Login = () => {
+  return <a href={oAuthUrl}>Log in</a>;
 };
 
 function App(props) {
   return (
     <BrowserRouter>
-      <div>
-        <ul>
-          <li><Link to='/login'>Log in</Link></li>
-          <li><Link to='/register'>Register</Link></li>
-          <li><Link to='/repositories'>Repositories</Link></li>
-        </ul>
-
-        <a href={oAuthUrl}>Sign in</a>
-
+      <Switch>
         <Route path='/callback' component={Callback} />
-        <Route path='/login' component={Test} />
-        <Route path='/register' component={Test} />
-        <Route path='/repositories' component={Test} />
-      </div>
+        <Route path='/login' component={Login} />
+        <PrivateRoute
+          isAuthorised={props.isAuthorised}
+          path='/installations'
+          component={Installations}
+        />
+
+        <Redirect to='/installations' />
+      </Switch>
     </BrowserRouter>
   );
+};
+
+App.propTypes = {
+  isAuthorised: PropTypes.bool.isRequired,
 };
 
 export default App;
