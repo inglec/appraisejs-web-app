@@ -9,28 +9,15 @@ import {
 } from 'react-router-dom';
 
 import PrivateRoute from 'appraisejs-components/PrivateRoute';
-import Callback from 'appraisejs-containers/Callback';
-
-import { oAuthUrl } from 'appraisejs-utils/githubApi.js';
-
-const handleErrors = (err) => {
-  console.log('error');
-  console.log(err);
-};
-
-const Installations = () => {
-  return <h1>My Installations</h1>;
-}
-
-const Login = () => {
-  return <a href={oAuthUrl}>Log in</a>;
-};
+import ConnectedCallback from 'appraisejs-containers/Callback';
+import Installations from 'appraisejs-containers/Installations';
+import Login from 'appraisejs-modules/Login';
 
 function App(props) {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path='/callback' component={Callback} />
+        <Route path='/callback' component={ConnectedCallback} />
         <Route path='/login' component={Login} />
         <PrivateRoute
           isAuthorised={props.isAuthorised}

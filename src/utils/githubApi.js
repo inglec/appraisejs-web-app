@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import axios from 'axios';
 
 import { appendUrlParams } from 'appraisejs-utils/requests.js';
 
@@ -9,7 +9,7 @@ const gitHubAppsAcceptHeader = { 'Accept': 'application/vnd.github.machine-man-p
 const gitHubApiUrl = 'https://api.github.com';
 
 export const getAccessToken = (code) => {
-  return Axios.post(`${config.serverUrl}/authenticate`, { code })
+  return axios.post(`${config.serverUrl}/authenticate`, { code })
     .then((response) => {
       return new Promise((resolve, reject) => {
         if ('access_token' in response.data) {
@@ -26,7 +26,7 @@ export const getAccessToken = (code) => {
 };
 
 export const getInstallationRepos = (tokenType, token, installationId) => {
-  return Axios.get(`${gitHubApiUrl}/user/installations/${installationId}/repositories`, {
+  return axios.get(`${gitHubApiUrl}/user/installations/${installationId}/repositories`, {
     headers: {
       ...gitHubAppsAcceptHeader,
       'Authorization': `${tokenType} ${token}`
@@ -35,7 +35,7 @@ export const getInstallationRepos = (tokenType, token, installationId) => {
 };
 
 export const getInstallations = (tokenType, token) => {
-  return Axios.get(`${gitHubApiUrl}/user/installations`, {
+  return axios.get(`${gitHubApiUrl}/user/installations`, {
     headers: {
       ...gitHubAppsAcceptHeader,
       'Authorization': `${tokenType} ${token}`

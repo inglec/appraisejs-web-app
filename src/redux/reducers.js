@@ -2,115 +2,110 @@ import { combineReducers } from 'redux';
 
 import {
   AUTHORISE,
-  FETCH_BENCHMARKS,
-  FETCH_COMMITS,
+  FAILURE,
   FETCH_INSTALLATIONS,
-  FETCH_REPOSITORIES,
-} from './actionTypes';
+  STARTED,
+  SUCCESS,
+} from './actions';
 
-const createDataObject = data => ({
-  data: null,
-  didInvalidate: false,
-  isFetching: false,
-  lastUpdated: null,
-});
-
-// We use a function to prevent mutation.
-const getInitialState = (field) => {
-  switch (field) {
-    case 'authorisation':
-      return {
-        token: null,
-        tokenType: null,
-      };
-    case 'benchmarkResults':
-    case 'benchmarksByCommit':
-    case 'commitsByRepository':
-    case 'repositoriesByInstallation':
-      return {};
-    case 'installations':
-      return createDataObject([]);
-    case 'selectedBranch':
-    case 'selectedCommit':
-    case 'selectedInstallation':
-    case 'selectedRepository':
-    default:
-      return null;
-  }
-};
-
-const authorisation = (state = getInitialState('authorisation'), action) => {
+const token = (state = null, action) => {
   switch (action.type) {
     case AUTHORISE:
-      return {
-        token: action.token,
-        tokenType: action.tokenType,
-      };
+      return action.token;
     default:
       return state;
   }
 };
 
-const benchmarkResults = (state = getInitialState('benchmarkResults'), action) => {
+const tokenType = (state = null, action) => {
+  switch (action.type) {
+    case AUTHORISE:
+      return action.tokenType;
+    default:
+      return state;
+  }
+};
+
+const authorisation = combineReducers({
+  token,
+  tokenType,
+});
+
+const benchmarkResults = (state = {}, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-const benchmarksByCommit = (state = getInitialState('benchmarksByCommit'), action) => {
+const benchmarksByCommit = (state = {}, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-const commitsByRepository = (state = getInitialState('commitsByRepository'), action) => {
+const commitsByRepository = (state = {}, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-const installations = (state = getInitialState('installations'), action) => {
+const installations = (state = {}, action) => {
+  switch (action.type) {
+    case FETCH_INSTALLATIONS: {
+      switch (action.status) {
+        case FAILURE:
+          return {
+            isFetching: false,
+            message: action.message,
+          };
+        case STARTED:
+          return { isFetching: true };
+        case SUCCESS:
+          return {
+            data: action.data,
+            isFetching: false,
+          };
+        default:
+          return {};
+      }
+    }
+    default:
+      return state;
+  }
+};
+
+const repositoriesByInstallation = (state = {}, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-const repositoriesByInstallation = (
-  state = getInitialState('repositoriesByInstallation'),
-  action
-) => {
+const selectedBranch = (state = null, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-const selectedBranch = (state = getInitialState('selectedBranch'), action) => {
+const selectedCommit = (state = null, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-const selectedCommit = (state = getInitialState('selectedCommit'), action) => {
+const selectedInstallation = (state = null, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
 
-const selectedInstallation = (state = getInitialState('selectedInstallation'), action) => {
-  switch (action.type) {
-    default:
-      return state;
-  }
-};
-
-const selectedRepository = (state = getInitialState('selectedRepository'), action) => {
+const selectedRepository = (state = null, action) => {
   switch (action.type) {
     default:
       return state;
