@@ -1,10 +1,13 @@
 import { combineReducers } from 'redux';
 
 import {
-  AUTHORISE,
+  AUTHENTICATE,
   FETCH_INSTALLATIONS_FAILURE,
   FETCH_INSTALLATIONS_STARTED,
   FETCH_INSTALLATIONS_SUCCESS,
+  FETCH_REPOSITORIES_FAILURE,
+  FETCH_REPOSITORIES_STARTED,
+  FETCH_REPOSITORIES_SUCCESS,
   SELECT_BRANCH,
   SELECT_COMMIT,
   SELECT_INSTALLATION,
@@ -16,9 +19,9 @@ const createAuthObj = (tokenType, token) => ({
   tokenType,
 });
 
-const authorisation = (state = createAuthObj(null, null), action) => {
+const authentication = (state = createAuthObj(null, null), action) => {
   switch (action.type) {
-    case AUTHORISE:
+    case AUTHENTICATE:
       return createAuthObj(action.tokenType, action.token);
     default:
       return state;
@@ -121,7 +124,7 @@ const selectedRepository = (state = null, action) => {
 };
 
 export default combineReducers({
-  authorisation,
+  authentication,
   benchmarkResults,
   benchmarksByCommit,
   commitsByRepository,

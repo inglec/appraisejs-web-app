@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import App from 'appraisejs-modules/App';
 
 const mapStateToProps = state => ({
-  isAuthorised: !(state.authorisation.token === null || state.authorisation.tokenType === null),
+  isAuthenticated: !(state.authentication.token === null || state.authentication.tokenType === null),
 });
 
 export default connect(mapStateToProps)(App);

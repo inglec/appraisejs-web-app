@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 
 import Callback from 'appraisejs-modules/Callback';
-import { setAuthorisation } from 'appraisejs-redux/actions';
+import { setAuthentication } from 'appraisejs-redux/actions';
 
 const mapDispatchToProps = dispatch => ({
-  onReceivedAccessToken: (type, token) => dispatch(setAuthorisation(type, token)),
+  onReceiveAccessToken: (type, token) => dispatch(setAuthentication(type, token)),
 });
 
-export default withRouter(connect(null, mapDispatchToProps)(Callback));
+const mapStateToProps = state => ({
+  receivedAccessToken: state.authentication.token !== null,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Callback);

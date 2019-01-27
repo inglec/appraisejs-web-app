@@ -17,7 +17,9 @@ class Installations extends Component {
             ? (
               <div className='installations'>
                 {
-                  _.map(this.props.installations, (installation, id) => <p key={id}>{id}</p>)
+                  _.map(this.props.installations, (installation, id) => (
+                    <p key={id} onClick={() => this.props.selectInstallation(id)}>{id}</p>
+                  ))
                 }
               </div>
             )
@@ -30,6 +32,7 @@ class Installations extends Component {
 
 Installations.propTypes = {
   fetchInstallations: PropTypes.func.isRequired,
+  selectInstallation: PropTypes.func.isRequired,
 
   installations: PropTypes.object,
   isLoaded: PropTypes.bool,

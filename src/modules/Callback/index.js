@@ -1,6 +1,7 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import config from 'appraisejs-root/config';
 
@@ -20,9 +21,7 @@ class Callback extends Component {
         .post(`${config.serverUrl}/authenticate`, { code: this.state.code })
         .then((response) => {
           if ('access_token' in response.data) {
-            // Store access token.
-            this.props.onReceivedAccessToken(response.data.token_type, response.data.access_token);
-            this.props.history.push('/');
+            this.props.onReceiveAccessToken(response.data.token_type, response.data.access_token);
           }
           else {
             console.error('Error retrieving access token from server. Response: ', response.data);
@@ -31,17 +30,20 @@ class Callback extends Component {
         .catch(console.error);
     } else {
       console.error('No code passed in URL parameters.')
-      this.props.history.push('/');
+
     }
   }
 
   render() {
-    return <p>Please wait while we retrieve your access token...</p>;
+    return this.props.receivedAccessToken
+      ? <Redirect to='/'/>
+      : <p>Please wait while we retrieve your access token...</p>;
   }
 };
 
 Callback.propTypes = {
-  onReceivedAccessToken: PropTypes.func.isRequired,
+  receivedAccessToken: PropTypes.bool.isRequired,
+  onReceiveAccessToken: PropTypes.func.isRequired,
 };
 
 export default Callback;

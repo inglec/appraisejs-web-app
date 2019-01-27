@@ -4,9 +4,9 @@ import {
   Route,
 } from 'react-router-dom';
 
-const PrivateRoute = ({ component: Component, isAuthorised, ...rest }) => {
+const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }) => {
   const render = (props) => {
-    return isAuthorised
+    return isAuthenticated
       ? <Component {...props} />
       : (
         <Redirect
