@@ -13,21 +13,24 @@ import ConnectedCallback from 'appraisejs-containers/Callback';
 import Installations from 'appraisejs-containers/Installations';
 import Login from 'appraisejs-modules/Login';
 
-function App(props) {
-  return (
-    <BrowserRouter>
-      <Switch>
-        <Route path='/callback' component={ConnectedCallback} />
-        <Route path='/login' component={Login} />
-        <PrivateRoute
-          isAuthorised={props.isAuthorised}
-          path='/installations'
-          component={Installations}
-        />
+import './styles.less';
 
-        <Redirect to='/installations' />
-      </Switch>
-    </BrowserRouter>
+const App = (props) => {
+  return (
+    <div id='app'>
+      <BrowserRouter>
+        <Switch>
+          <Route path='/callback' component={ConnectedCallback} />
+          <Route path='/login' component={Login} />
+          <PrivateRoute
+            isAuthorised={props.isAuthorised}
+            path='/installations'
+            component={Installations}
+          />
+          <Redirect to='/installations' />
+        </Switch>
+      </BrowserRouter>
+    </div>
   );
 };
 

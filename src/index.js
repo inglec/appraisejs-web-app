@@ -8,7 +8,6 @@ import thunk from 'redux-thunk';
 import App from 'appraisejs-containers/App'
 import reducer from 'appraisejs-redux/reducers';
 
-// Setup Redux store.
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
 const Component = (

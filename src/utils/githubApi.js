@@ -4,9 +4,8 @@ import { appendUrlParams } from 'appraisejs-utils/requests.js';
 
 import config from 'appraisejs-root/config.js';
 
-const gitHubAppsAcceptHeader = { 'Accept': 'application/vnd.github.machine-man-preview+json' };
-
-const gitHubApiUrl = 'https://api.github.com';
+export const GITHUB_API_URL = 'https://api.github.com';
+export const GITHUB_APPS_MEDIA_TYPE = 'application/vnd.github.machine-man-preview+json';
 
 export const getAccessToken = (code) => {
   return axios.post(`${config.serverUrl}/authenticate`, { code })
@@ -26,18 +25,18 @@ export const getAccessToken = (code) => {
 };
 
 export const getInstallationRepos = (tokenType, token, installationId) => {
-  return axios.get(`${gitHubApiUrl}/user/installations/${installationId}/repositories`, {
+  return axios.get(`${GITHUB_API_URL}/user/installations/${installationId}/repositories`, {
     headers: {
-      ...gitHubAppsAcceptHeader,
+      'Accept': GITHUB_APPS_MEDIA_TYPE,
       'Authorization': `${tokenType} ${token}`
     }
   }).then(response => Promise.resolve(response.data));
 };
 
 export const getInstallations = (tokenType, token) => {
-  return axios.get(`${gitHubApiUrl}/user/installations`, {
+  return axios.get(`${GITHUB_API_URL}/user/installations`, {
     headers: {
-      ...gitHubAppsAcceptHeader,
+      'Accept': GITHUB_APPS_MEDIA_TYPE,
       'Authorization': `${tokenType} ${token}`
     }
   }).then(response => Promise.resolve(response.data.installations));

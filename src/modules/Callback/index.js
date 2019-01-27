@@ -1,7 +1,8 @@
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { getAccessToken } from 'appraisejs-utils/githubApi.js';
+import config from 'appraisejs-root/config';
 
 class Callback extends Component {
   constructor(props) {
@@ -15,14 +16,21 @@ class Callback extends Component {
 
   componentDidMount() {
     if (this.state.code) {
-      getAccessToken(this.state.code)
-        .then(({ token, type }) => {
-          // Store access token.
-          this.props.onReceivedAccessToken(type, token);
-          this.props.history.push('/');
+      axios
+        .post(`${config.serverUrl}/authenticate`, { code: this.state.code })
+        .then((response) => {
+          if ('access_token' in response.data) {
+            // Store access token.
+            this.props.onReceivedAccessToken(response.data.token_type, response.data.access_token);
+            this.props.history.push('/');
+          }
+          else {
+            console.error('Error retrieving access token from server. Response: ', response.data);
+          }
         })
-        .catch(err => console.log(err));
+        .catch(console.error);
     } else {
+      console.error('No code passed in URL parameters.')
       this.props.history.push('/');
     }
   }
