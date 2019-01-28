@@ -1,5 +1,6 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import qs from 'query-string';
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
@@ -10,8 +11,7 @@ class Callback extends Component {
   constructor(props) {
     super(props);
 
-    const url = new URL(window.location.href);
-    const code = url.searchParams.get('code');
+    const { code } = qs.parse(props.location.search);
 
     this.state = { code };
   }
@@ -36,7 +36,7 @@ class Callback extends Component {
   }
 
   render() {
-    return this.props.receivedAccessToken
+    return this.props.hasAccessToken
       ? <Redirect to='/'/>
       : <p>Please wait while we retrieve your access token...</p>;
   }
@@ -44,7 +44,7 @@ class Callback extends Component {
 
 Callback.propTypes = {
   ...reactRouterPropTypes,
-  receivedAccessToken: PropTypes.bool.isRequired,
+  hasAccessToken: PropTypes.bool.isRequired,
   onReceiveAccessToken: PropTypes.func.isRequired,
 };
 

@@ -46,15 +46,13 @@ class Installations extends Component {
 Installations.propTypes = {
   ...reactRouterPropTypes,
   fetchInstallations: PropTypes.func.isRequired,
-  // selectInstallation: PropTypes.func.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
 
   installations: PropTypes.object,
-  isLoaded: PropTypes.bool,
 };
 
 Installations.defaultProps = {
-  installations: null,
-  isLoaded: false,
+  installations: {},
 };
 
 export default Installations;

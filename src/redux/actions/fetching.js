@@ -45,11 +45,12 @@ export const fetchInstallations = () => {
   }
 };
 
-export const fetchRepositories = (installationId) => {
+export const fetchReposInInstallation = (installationId) => {
   const failure = error => createAction(FETCH_REPOSITORIES_FAILURE, { message: error });
-  const success = repositories => (
-    createAction(FETCH_REPOSITORIES_SUCCESS, { data: repositories })
-  );
+  const success = repositories => createAction(FETCH_REPOSITORIES_SUCCESS, {
+    data: repositories,
+    key: installationId,
+  });
 
   return (dispatch, getState) => {
     dispatch(createAction(FETCH_REPOSITORIES_STARTED));

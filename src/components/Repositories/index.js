@@ -7,10 +7,19 @@ import React, { Component } from 'react';
 import reactRouterPropTypes from 'appraisejs-proptypes/react_router';
 
 class Repositories extends Component {
+  constructor(props) {
+    super(props);
+
+    const { installationId } = qs.parse(props.location.search);
+
+    this.state = { installationId };
+  }
+
   componentDidMount() {
-    if (_.isEmpty(this.props.repositories)) {
-      const params = qs.parse(this.props.location.search);
-      this.props.fetchRepositories(params.installationId);
+    if (this.state.installationId) {
+      if (_.isEmpty(this.props.reposByInstallation[this.state.installationId])) {
+        this.props.fetchReposInInstallation(this.state.installationId);
+      }
     }
   }
 
@@ -23,9 +32,10 @@ class Repositories extends Component {
             ? (
               <div className='repositories'>
                 {
-                  _.map(this.props.repositories, (repository, id) => (
-                    <p key={id} onClick={() => this.props.selectRepository(id)}>{id}</p>
-                  ))
+                  _.map(
+                    this.props.reposByInstallation[this.state.installationId],
+                    (repository, id) => <p key={id}>{id}</p>
+                  )
                 }
               </div>
             )
@@ -38,16 +48,14 @@ class Repositories extends Component {
 
 Repositories.propTypes = {
   ...reactRouterPropTypes,
-  fetchRepositories: PropTypes.func.isRequired,
-  // selectRepository: PropTypes.func.isRequired,
+  fetchReposInInstallation: PropTypes.func.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
 
-  repositories: PropTypes.object,
-  isLoaded: PropTypes.bool,
+  reposByInstallation: PropTypes.object,
 };
 
 Repositories.defaultProps = {
-  repositories: {},
-  isLoaded: false,
-};
+  reposByInstallation: {},
+}
 
 export default Repositories;
