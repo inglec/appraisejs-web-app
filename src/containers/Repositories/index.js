@@ -1,15 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Repositories from 'appraisejs-modules/Repositories';
+import Repositories from 'appraisejs-components/Repositories';
 import {
   fetchRepositories,
   selectRepository,
 } from 'appraisejs-redux/actions';
 
 const mapDispatchToProps = dispatch => ({
-  fetchRepositories: () => dispatch(fetchRepositories()),
-  selectRepository: repository => dispatch(selectRepository(repository)),
+  fetchRepositories: installationId => dispatch(fetchRepositories(installationId)),
 });
 
 const mapStateToProps = (state) => {

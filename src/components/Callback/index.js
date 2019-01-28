@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
+import reactRouterPropTypes from 'appraisejs-proptypes/react_router';
 import config from 'appraisejs-root/config';
 
 class Callback extends Component {
@@ -42,6 +43,7 @@ class Callback extends Component {
 };
 
 Callback.propTypes = {
+  ...reactRouterPropTypes,
   receivedAccessToken: PropTypes.bool.isRequired,
   onReceiveAccessToken: PropTypes.func.isRequired,
 };

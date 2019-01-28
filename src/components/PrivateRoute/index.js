@@ -4,6 +4,8 @@ import {
   Route,
 } from 'react-router-dom';
 
+import reactRouterPropTypes from 'appraisejs-proptypes/react_router';
+
 const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }) => {
   const render = (props) => {
     return isAuthenticated

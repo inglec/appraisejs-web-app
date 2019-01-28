@@ -12,7 +12,7 @@ import PrivateRoute from 'appraisejs-components/PrivateRoute';
 import ConnectedCallback from 'appraisejs-containers/Callback';
 import Installations from 'appraisejs-containers/Installations';
 import Repositories from 'appraisejs-containers/Repositories';
-import Login from 'appraisejs-modules/Login';
+import Login from 'appraisejs-components/Login';
 
 import './styles.less';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Installations from 'appraisejs-modules/Installations';
+import Installations from 'appraisejs-components/Installations';
 import {
   fetchInstallations,
   selectInstallation,
@@ -9,7 +9,7 @@ import {
 
 const mapDispatchToProps = dispatch => ({
   fetchInstallations: () => dispatch(fetchInstallations()),
-  selectInstallation: installation => dispatch(selectInstallation(installation)),
+  // selectInstallation: installation => dispatch(selectInstallation(installation)),
 });
 
 const mapStateToProps = state => ({

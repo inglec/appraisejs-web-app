@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Callback from 'appraisejs-modules/Callback';
+import Callback from 'appraisejs-components/Callback';
 import { setAuthentication } from 'appraisejs-redux/actions';
 
 const mapDispatchToProps = dispatch => ({

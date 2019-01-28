@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {
   GITHUB_API_URL,
   GITHUB_APPS_MEDIA_TYPE,
-} from 'appraisejs-utils/githubApi';
+} from 'appraisejs-utils/github_api';
 import { createAction } from 'appraisejs-utils/redux';
 
 // Action types.
@@ -34,12 +34,12 @@ export const fetchInstallations = () => {
         }
       })
       .then((res) => {
-        const obj = res.data.installations.reduce((acc, installation) => ({
+        const obj = res.data.installations.reduce((acc, repository) => ({
           ...acc,
-          [installation.id]: _.pick(installation, ['account', 'app_id']),
+          [repository.id]: _.pick(repository, ['account', 'app_id']),
         }), {});
 
-        dispatch(success(obj))
+        dispatch(success(obj));
       })
       .catch(err => dispatch(failure(err)));
   }
@@ -54,7 +54,7 @@ export const fetchRepositories = (installationId) => {
   return (dispatch, getState) => {
     dispatch(createAction(FETCH_REPOSITORIES_STARTED));
 
-    // Get the repositories accessible by an installation.
+    // Get the repositories accessible by an repository.
     const { tokenType, token } = getState().authentication;
     axios
       .get(`${GITHUB_API_URL}/user/installations/${installationId}/repositories`, {
@@ -64,9 +64,15 @@ export const fetchRepositories = (installationId) => {
         }
       })
       .then((res) => {
-        console.log(res.data);
+        const obj = res.data.repositories.reduce((acc, repository) => ({
+          ...acc,
+          [repository.id]: _.pick(
+            repository,
+            ['description', 'html_url', 'name', 'owner', 'private', 'updated_at'],
+          ),
+        }), {});
 
-        dispatch(success({}))
+        dispatch(success(obj));
       })
       .catch(err => dispatch(failure(err)));
   }

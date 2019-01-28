@@ -36,7 +36,7 @@ module.exports = {
       'appraisejs-root': __dirname,
       'appraisejs-containers': path.resolve(__dirname, './src/containers'),
       'appraisejs-components': path.resolve(__dirname, './src/components'),
-      'appraisejs-modules': path.resolve(__dirname, './src/modules'),
+      'appraisejs-proptypes': path.resolve(__dirname, './src/proptypes'),
       'appraisejs-redux': path.resolve(__dirname, './src/redux'),
       'appraisejs-utils': path.resolve(__dirname, './src/utils')
     }

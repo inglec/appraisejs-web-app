@@ -8,10 +8,10 @@ import {
   FETCH_REPOSITORIES_FAILURE,
   FETCH_REPOSITORIES_STARTED,
   FETCH_REPOSITORIES_SUCCESS,
-  SELECT_BRANCH,
-  SELECT_COMMIT,
-  SELECT_INSTALLATION,
-  SELECT_REPOSITORY,
+  // SELECT_BRANCH,
+  // SELECT_COMMIT,
+  // SELECT_INSTALLATION,
+  // SELECT_REPOSITORY,
 } from './actions';
 
 const createAuthObj = (tokenType, token) => ({
@@ -130,8 +130,8 @@ export default combineReducers({
   commitsByRepository,
   installations,
   repositoriesByInstallation,
-  selectedBranch,
-  selectedCommit,
-  selectedInstallation,
-  selectedRepository,
+  // selectedBranch,
+  // selectedCommit,
+  // selectedInstallation,
+  // selectedRepository,
 });
