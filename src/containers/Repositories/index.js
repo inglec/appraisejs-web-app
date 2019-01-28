@@ -10,6 +10,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   reposByInstallation: state.reposByInstallation.data,
+  repositories: state.repositories,
   isLoaded: state.reposByInstallation.isFetching === false,
 })
 

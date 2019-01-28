@@ -11,31 +11,29 @@ import {
 import PrivateRoute from 'appraisejs-components/PrivateRoute';
 import ConnectedCallback from 'appraisejs-containers/Callback';
 import Installations from 'appraisejs-containers/Installations';
+import Login from 'appraisejs-containers/Login';
 import Repositories from 'appraisejs-containers/Repositories';
-import Login from 'appraisejs-components/Login';
 
 import './styles.less';
-
-const Root = props => <Redirect to='/installations' />;
 
 const App = (props) => {
   return (
     <div id='app'>
       <BrowserRouter>
         <Switch>
+          <Route exact path='/' component={props => 'Welcome!'} />
           <Route path='/callback' component={ConnectedCallback} />
           <Route path='/login' component={Login} />
           <PrivateRoute
             isAuthenticated={props.isAuthenticated}
-            path='/installations'
+            exact path='/installations'
             component={Installations}
           />
           <PrivateRoute
             isAuthenticated={props.isAuthenticated}
-            path='/repositories'
+            exact path='/installations/:installationId'
             component={Repositories}
           />
-          <Route path='/' component={Root} />
         </Switch>
       </BrowserRouter>
     </div>

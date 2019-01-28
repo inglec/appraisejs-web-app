@@ -25,10 +25,7 @@ class Installations extends Component {
                   _.map(this.props.installations, (installation, id) => (
                     <Link
                       key={id}
-                      to={{
-                        pathname: '/repositories',
-                        search: `?installationId=${id}`,
-                      }}
+                      to={`${this.props.match.path}/${id}`}
                     >
                       Installation {id}
                     </Link>

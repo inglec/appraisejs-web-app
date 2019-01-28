@@ -10,15 +10,13 @@ import {
   FETCH_REPOSITORIES_SUCCESS,
 } from './actions';
 
-const createAuthObj = (tokenType, token) => ({
-  token,
-  tokenType,
-});
-
-const authentication = (state = createAuthObj(null, null), action) => {
+const authentication = (state = {}, action) => {
   switch (action.type) {
     case AUTHENTICATE:
-      return createAuthObj(action.tokenType, action.token);
+      return {
+        token: action.token,
+        tokenType: action.tokenType,
+      }
     default:
       return state;
   }
@@ -49,8 +47,8 @@ const installations = (state = {}, action) => {
   switch (action.type) {
     case FETCH_INSTALLATIONS_FAILURE:
       return {
+        error: action.message,
         isFetching: false,
-        message: action.message,
       };
     case FETCH_INSTALLATIONS_STARTED:
       return { isFetching: true };
@@ -68,19 +66,36 @@ const reposByInstallation = (state = {}, action) => {
   switch (action.type) {
     case FETCH_REPOSITORIES_FAILURE:
       return {
+        ...state,
         isFetching: false,
-        message: action.message,
+        error: action.message,
       };
     case FETCH_REPOSITORIES_STARTED:
-      return { isFetching: true };
+      return {
+        ...state,
+        isFetching: true,
+      };
     case FETCH_REPOSITORIES_SUCCESS:
       return {
+        ...state,
         data: {
           ...state.data,
-          [action.key]: action.data,
+          [action.key]: Object.keys(action.data),
         },
         isFetching: false,
       };
+    default:
+      return state;
+  }
+};
+
+const repositories = (state = {}, action) => {
+  switch (action.type) {
+    case FETCH_REPOSITORIES_SUCCESS:
+      return {
+        ...state,
+        ...action.data,
+      }
     default:
       return state;
   }
@@ -93,4 +108,5 @@ export default combineReducers({
   commitsByRepository,
   installations,
   reposByInstallation,
+  repositories,
 });

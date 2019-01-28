@@ -7,23 +7,26 @@ import React, { Component } from 'react';
 import reactRouterPropTypes from 'appraisejs-proptypes/react_router';
 
 class Repositories extends Component {
-  constructor(props) {
-    super(props);
-
-    const { installationId } = qs.parse(props.location.search);
-
-    this.state = { installationId };
-  }
-
   componentDidMount() {
-    if (this.state.installationId) {
-      if (_.isEmpty(this.props.reposByInstallation[this.state.installationId])) {
-        this.props.fetchReposInInstallation(this.state.installationId);
+    const { installationId } = this.props.match.params;
+
+    if (installationId) {
+      if (_.isEmpty(this.props.reposByInstallation[installationId])) {
+        this.props.fetchReposInInstallation(installationId);
       }
     }
   }
 
   render() {
+    const { installationId } = this.props.match.params;
+
+    const installationRepos = this.props.isLoaded
+      ? this.props.reposByInstallation[installationId].reduce((acc, repoId) => {
+        acc[repoId] = this.props.repositories[repoId];
+        return acc;
+      }, {})
+      : {};
+
     return (
       <div>
         <h1>My Repositories</h1>
@@ -33,8 +36,8 @@ class Repositories extends Component {
               <div className='repositories'>
                 {
                   _.map(
-                    this.props.reposByInstallation[this.state.installationId],
-                    (repository, id) => <p key={id}>{id}</p>
+                    installationRepos,
+                    (repository, id) => <p key={id}>{repository.name}</p>
                   )
                 }
               </div>
@@ -56,6 +59,6 @@ Repositories.propTypes = {
 
 Repositories.defaultProps = {
   reposByInstallation: {},
-}
+};
 
 export default Repositories;

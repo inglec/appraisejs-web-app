@@ -7,8 +7,19 @@ import thunk from 'redux-thunk';
 
 import App from 'appraisejs-containers/App'
 import reducer from 'appraisejs-redux/reducers';
+import StateLoader from 'appraisejs-utils/stateloader';
 
-const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
+const stateLoader = new StateLoader();
+
+const store = createStore(
+  reducer,
+  stateLoader.loadState(),
+  composeWithDevTools(applyMiddleware(thunk)),
+);
+
+store.subscribe(() => {
+  stateLoader.saveState(store.getState());
+});
 
 const Component = (
   <Provider store={store}>

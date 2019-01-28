@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
   devServer: {
     // Redirect all requests to "index.html".
-    historyApiFallback: true
+    historyApiFallback: true,
   },
   module: {
     rules: [
@@ -40,5 +40,10 @@ module.exports = {
       'appraisejs-redux': path.resolve(__dirname, './src/redux'),
       'appraisejs-utils': path.resolve(__dirname, './src/utils')
     }
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'appraise.js',
+    publicPath: '/'
   }
 };
