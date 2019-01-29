@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import qs from 'query-string';
 import React, { Component } from 'react';
 
+import RepositoryTile from './RepositoryTile';
 import reactRouterPropTypes from 'appraisejs-proptypes/react_router';
+import { toCamelCaseKeys } from 'appraisejs-utils/objects';
+
+import './styles.less';
 
 class Repositories extends Component {
   componentDidMount() {
@@ -17,7 +21,7 @@ class Repositories extends Component {
     }
   }
 
-  render() {
+  renderRepositories() {
     const { installationId } = this.props.match.params;
 
     const installationRepos = this.props.isLoaded
@@ -27,23 +31,42 @@ class Repositories extends Component {
       }, {})
       : {};
 
+    let path = this.props.match.url;
+    if (path[path.length - 1] === '/') {
+      path = path.substring(0, path.length - 1)
+    }
+
+    return (
+      <div className='repositories'>
+        {
+          _.map(installationRepos, (repository, id) => {
+            const owner = toCamelCaseKeys(
+              _.pick(repository.owner, ['avatar_url', 'html_url', 'login'])
+            );
+
+            const props = {
+              id,
+              key: id,
+              name: repository.name,
+              owner,
+              path,
+              isPrivate: repository.private,
+            };
+
+            return <RepositoryTile {...props}/>;
+          })
+        }
+      </div>
+    );
+  }
+
+  render() {
+    const { installationId } = this.props.match.params;
+
     return (
       <div>
-        <h1>My Repositories</h1>
-        {
-          this.props.isLoaded
-            ? (
-              <div className='repositories'>
-                {
-                  _.map(
-                    installationRepos,
-                    (repository, id) => <p key={id}>{repository.name}</p>
-                  )
-                }
-              </div>
-            )
-            : <p>Loading...</p>
-        }
+        <h1>Repositories for Installation {installationId}</h1>
+        {this.props.isLoaded ? this.renderRepositories() : <p>Loading...</p>}
       </div>
     );
   }

@@ -53,10 +53,17 @@ export const fetchReposInInstallation = (installationId) => {
   });
 
   return (dispatch, getState) => {
+    const state = getState();
+
+    // Fetch installations if missing.
+    if (_.isEmpty(state.installations)) {
+      fetchInstallations()(dispatch, getState);
+    }
+
     dispatch(createAction(FETCH_REPOSITORIES_STARTED));
 
     // Get the repositories accessible by an repository.
-    const { tokenType, token } = getState().authentication;
+    const { tokenType, token } = state.authentication;
     axios
       .get(`${GITHUB_API_URL}/user/installations/${installationId}/repositories`, {
         headers: {
