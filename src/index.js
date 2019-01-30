@@ -17,9 +17,7 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(thunk)),
 );
 
-store.subscribe(() => {
-  stateLoader.saveState(store.getState());
-});
+store.subscribe(() => stateLoader.saveState(store.getState()));
 
 const Component = (
   <Provider store={store}>
