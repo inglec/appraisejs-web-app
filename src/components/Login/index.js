@@ -8,7 +8,7 @@ import { oAuthUrl } from 'appraisejs-utils/github_api.js';
 const Login = (props) => {
   return props.isAuthenticated
     ? <Redirect to='/installations' />
-    : <a href={oAuthUrl}>Log in</a>;
+    : <a href={oAuthUrl}>Log in via GitHub</a>;
 };
 
 Login.propTypes = {

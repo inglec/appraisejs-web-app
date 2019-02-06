@@ -8,6 +8,7 @@ import {
   Switch,
 } from 'react-router-dom';
 
+import Home from 'appraisejs-components/Home';
 import PrivateRoute from 'appraisejs-components/PrivateRoute';
 import ConnectedCallback from 'appraisejs-containers/Callback';
 import Installations from 'appraisejs-containers/Installations';
@@ -22,7 +23,7 @@ const App = (props) => {
     <div id='app'>
       <BrowserRouter>
         <Switch>
-          <Route exact path='/' component={props => 'Welcome to the home page!'} />
+          <Route exact path='/' component={Home} />
           <Route path='/callback' component={ConnectedCallback} />
           <Route path='/login' component={Login} />
           <PrivateRoute

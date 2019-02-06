@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 
 import reactRouterPropTypes from 'appraisejs-proptypes/react_router';
 import config from 'appraisejs-root/config';
+import { getAccessToken } from 'appraisejs-utils/github_api';
 
 class Callback extends Component {
   constructor(props) {
@@ -18,8 +19,7 @@ class Callback extends Component {
 
   componentDidMount() {
     if (this.state.code) {
-      axios
-        .post(`${config.serverUrl}/authenticate`, { code: this.state.code })
+      getAccessToken(this.state.code)
         .then((response) => {
           if ('access_token' in response.data) {
             this.props.onReceiveAccessToken(response.data.token_type, response.data.access_token);

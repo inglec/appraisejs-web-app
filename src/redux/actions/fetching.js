@@ -2,8 +2,8 @@ import axios from 'axios';
 import _ from 'lodash';
 
 import {
-  GITHUB_API_URL,
-  GITHUB_APPS_MEDIA_TYPE,
+  getInstallationRepos,
+  getInstallations,
 } from 'appraisejs-utils/github_api';
 import { createAction } from 'appraisejs-utils/redux';
 
@@ -24,20 +24,19 @@ export const fetchInstallations = () => {
   return (dispatch, getState) => {
     dispatch(createAction(FETCH_INSTALLATIONS_STARTED));
 
+    const {
+      token,
+      tokenType,
+    } = getState().authentication;
+
     // Get the user's installations.
-    const { tokenType, token } = getState().authentication;
-    axios
-      .get(`${GITHUB_API_URL}/user/installations`, {
-        headers: {
-          'Accept': GITHUB_APPS_MEDIA_TYPE,
-          'Authorization': `${tokenType} ${token}`
-        }
-      })
+    getInstallations(tokenType, token)
       .then((res) => {
-        const obj = res.data.installations.reduce((acc, repository) => ({
-          ...acc,
-          [repository.id]: _.pick(repository, ['account', 'app_id']),
-        }), {});
+        const { installations } = res.data;
+        const obj = installations.reduce((acc, repository) => {
+          acc[repository.id] = _.pick(repository, ['account', 'app_id']);
+          return acc;
+        }, {});
 
         dispatch(success(obj));
       })
@@ -62,23 +61,21 @@ export const fetchReposInInstallation = (installationId) => {
 
     dispatch(createAction(FETCH_REPOSITORIES_STARTED));
 
-    // Get the repositories accessible by an repository.
-    const { tokenType, token } = state.authentication;
-    axios
-      .get(`${GITHUB_API_URL}/user/installations/${installationId}/repositories`, {
-        headers: {
-          'Accept': GITHUB_APPS_MEDIA_TYPE,
-          'Authorization': `${tokenType} ${token}`
-        }
-      })
+    const {
+      token,
+      tokenType,
+    } = state.authentication;
+
+    // Get the repositories accessible by an installation.
+    getInstallationRepos(tokenType, token, installationId)
       .then((res) => {
-        const obj = res.data.repositories.reduce((acc, repository) => ({
-          ...acc,
-          [repository.id]: _.pick(
+        const obj = res.data.repositories.reduce((acc, repository) => {
+          acc[repository.id] = _.pick(
             repository,
             ['description', 'html_url', 'name', 'owner', 'private', 'updated_at'],
-          ),
-        }), {});
+          );
+          return acc;
+        }, {});
 
         dispatch(success(obj));
       })
