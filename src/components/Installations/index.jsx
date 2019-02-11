@@ -1,33 +1,36 @@
-import axios from 'axios';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import reactRouterPropTypes from 'appraisejs-proptypes/react_router';
+import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
 
 class Installations extends Component {
   componentDidMount() {
-    if (_.isEmpty(this.props.installations)) {
-      this.props.fetchInstallations();
+    const { fetchInstallations, installations } = this.props;
+
+    if (_.isEmpty(installations)) {
+      fetchInstallations();
     }
   }
 
   render() {
+    const { installations, isLoaded, match } = this.props;
+
     return (
       <div>
         <h1>My Installations</h1>
         {
-          this.props.isLoaded
+          isLoaded
             ? (
-              <div className='installations'>
+              <div className="installations">
                 {
-                  _.map(this.props.installations, (installation, id) => (
+                  _.map(installations, (installation, id) => (
                     <Link
                       key={id}
-                      to={`${this.props.match.path}/${id}/repositories`}
+                      to={`${match.path}/${id}/repositories`}
                     >
-                      Installation {id}
+                      {`Installation ${id}`}
                     </Link>
                   ))
                 }
@@ -38,18 +41,17 @@ class Installations extends Component {
       </div>
     );
   }
-};
+}
 
 Installations.propTypes = {
-  ...reactRouterPropTypes,
+  ...propTypesRouteComponent,
   fetchInstallations: PropTypes.func.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 
-  installations: PropTypes.object,
+  // FIX
+  installations: PropTypes.objectOf(PropTypes.any),
 };
 
-Installations.defaultProps = {
-  installations: {},
-};
+Installations.defaultProps = { installations: {} };
 
 export default Installations;

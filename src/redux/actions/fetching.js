@@ -1,4 +1,3 @@
-import axios from 'axios';
 import _ from 'lodash';
 
 import {
@@ -24,10 +23,7 @@ export const fetchInstallations = () => {
   return (dispatch, getState) => {
     dispatch(createAction(FETCH_INSTALLATIONS_STARTED));
 
-    const {
-      token,
-      tokenType,
-    } = getState().authentication;
+    const { token, tokenType } = getState().authentication;
 
     // Get the user's installations.
     getInstallations(tokenType, token)
@@ -41,7 +37,7 @@ export const fetchInstallations = () => {
         dispatch(success(obj));
       })
       .catch(err => dispatch(failure(err)));
-  }
+  };
 };
 
 export const fetchReposInInstallation = (installationId) => {
@@ -61,24 +57,26 @@ export const fetchReposInInstallation = (installationId) => {
 
     dispatch(createAction(FETCH_REPOSITORIES_STARTED));
 
-    const {
-      token,
-      tokenType,
-    } = state.authentication;
+    const { token, tokenType } = state.authentication;
 
     // Get the repositories accessible by an installation.
     getInstallationRepos(tokenType, token, installationId)
       .then((res) => {
         const obj = res.data.repositories.reduce((acc, repository) => {
-          acc[repository.id] = _.pick(
-            repository,
-            ['description', 'html_url', 'name', 'owner', 'private', 'updated_at'],
-          );
+          acc[repository.id] = _.pick(repository, [
+            'description',
+            'html_url',
+            'name',
+            'owner',
+            'private',
+            'updated_at',
+          ]);
+
           return acc;
         }, {});
 
         dispatch(success(obj));
       })
       .catch(err => dispatch(failure(err)));
-  }
+  };
 };

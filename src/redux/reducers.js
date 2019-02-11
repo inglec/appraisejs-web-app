@@ -16,7 +16,7 @@ const authentication = (state = {}, action) => {
       return {
         token: action.token,
         tokenType: action.tokenType,
-      }
+      };
     default:
       return state;
   }
@@ -95,7 +95,7 @@ const repositories = (state = {}, action) => {
       return {
         ...state,
         ...action.data,
-      }
+      };
     default:
       return state;
   }

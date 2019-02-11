@@ -5,9 +5,9 @@ import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
-import App from 'appraisejs-containers/App'
+import App from 'appraisejs-containers/App';
 import reducer from 'appraisejs-redux/reducers';
-import StateLoader from 'appraisejs-utils/stateloader';
+import StateLoader from 'appraisejs-utils/StateLoader';
 
 const stateLoader = new StateLoader();
 

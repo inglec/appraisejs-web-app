@@ -5,19 +5,24 @@ import { Link } from 'react-router-dom';
 
 import './styles.less';
 
-const RepositoryTile = (props) => {
-  return (
-    <div className='repositorytile'>
-      <Link to={`${props.path}/${props.id}`}>{props.name}</Link>
-      <img src={props.owner.avatarUrl} className='repositorytile-avatar' />
-      <a href={props.owner.htmlUrl} target='_blank'>{props.owner.login}</a>
-      {props.isPrivate ? <p>Private</p> : null}
-    </div>
-  )
-};
+const RepositoryTile = ({
+  id,
+  isPrivate,
+  name,
+  owner,
+  path,
+}) => (
+  <div className="repositorytile">
+    <Link to={`${path}/${id}`}>{name}</Link>
+    <img src={owner.avatarUrl} alt={`${name}'s avatar'`} className="repositorytile-avatar" />
+    <a href={owner.htmlUrl} target="_blank" rel="noopener noreferrer">{owner.login}</a>
+    {isPrivate ? <p>Private</p> : null}
+  </div>
+);
 
 RepositoryTile.propTypes = {
   id: PropTypes.string.isRequired,
+  isPrivate: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   owner: PropTypes.exact({
     avatarUrl: PropTypes.string.isRequired,
@@ -25,7 +30,6 @@ RepositoryTile.propTypes = {
     login: PropTypes.string.isRequired,
   }).isRequired,
   path: PropTypes.string.isRequired,
-  isPrivate: PropTypes.bool.isRequired,
 };
 
 export default RepositoryTile;

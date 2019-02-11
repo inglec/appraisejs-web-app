@@ -1,4 +1,3 @@
-import React from 'react';
 import { connect } from 'react-redux';
 
 import Repositories from 'appraisejs-components/Repositories';
@@ -12,6 +11,6 @@ const mapStateToProps = state => ({
   reposByInstallation: state.reposByInstallation.data,
   repositories: state.repositories,
   isLoaded: state.reposByInstallation.isFetching === false,
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Repositories);
