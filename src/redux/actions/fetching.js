@@ -28,8 +28,7 @@ export const fetchInstallations = () => {
     // Get the user's installations.
     getInstallations(tokenType, token)
       .then((res) => {
-        const { installations } = res.data;
-        const obj = installations.reduce((acc, repository) => {
+        const obj = res.data.installations.reduce((acc, repository) => {
           acc[repository.id] = _.pick(repository, ['account', 'app_id']);
           return acc;
         }, {});

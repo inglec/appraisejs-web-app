@@ -7,6 +7,8 @@ const mapDispatchToProps = dispatch => ({
   onReceiveAccessToken: (type, token) => dispatch(setAuthentication(type, token)),
 });
 
-const mapStateToProps = state => ({ hasAccessToken: state.authentication.token !== null });
+const mapStateToProps = state => ({
+  hasAccessToken: state.authentication.token !== null,
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Callback);

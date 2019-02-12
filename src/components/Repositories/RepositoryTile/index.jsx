@@ -14,8 +14,18 @@ const RepositoryTile = ({
 }) => (
   <div className="repositorytile">
     <Link to={`${path}/${id}`}>{name}</Link>
-    <img src={owner.avatarUrl} alt={`${name}'s avatar'`} className="repositorytile-avatar" />
-    <a href={owner.htmlUrl} target="_blank" rel="noopener noreferrer">{owner.login}</a>
+    <img
+      src={owner.avatarUrl}
+      alt={`${name}'s avatar'`}
+      className="repositorytile-avatar"
+    />
+    <a
+      href={owner.htmlUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {owner.login}
+    </a>
     {isPrivate ? <p>Private</p> : null}
   </div>
 );

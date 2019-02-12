@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  Redirect,
-  Route,
-} from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 
 import { propTypesRoute } from 'appraisejs-proptypes/react_router';
 

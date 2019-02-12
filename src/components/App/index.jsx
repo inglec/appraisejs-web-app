@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  BrowserRouter,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Home from 'appraisejs-components/Home';
 import PrivateRoute from 'appraisejs-components/PrivateRoute';
