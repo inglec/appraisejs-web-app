@@ -1,52 +1,44 @@
 import _ from 'lodash';
 
-const initialiseState = (state = {}) => ({
-  authentication: {
-    token: null,
-    tokenType: null,
-  },
-  benchmarkResults: {},
-  benchmarksByCommit: {},
-  commitsByRepository: {},
-  installations: {},
-  reposByInstallation: {},
-  repositories: {},
-  ...state,
-});
-
-const filterState = state => _.pick(state, ['authentication']);
-
 export default class StateLoader {
   constructor() {
-    this.state = initialiseState();
+    this.state = {};
+  }
+
+  static filterState(state) {
+    return _.pick(state, ['authentication']);
   }
 
   loadState() {
     try {
       const serializedState = localStorage.getItem('state');
-      if (serializedState !== null) {
-        const state = JSON.parse(serializedState);
-        this.state = initialiseState(state);
+      if (serializedState) {
+        this.state = JSON.parse(serializedState);
       }
+
       return this.state;
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
+
       return this.state;
     }
   }
 
-  saveState(state) {
+  saveState(newState) {
     try {
-      const filteredState = filterState(state);
+      const filteredNewState = this.constructor.filterState(newState);
+      const filteredCurrentState = this.constructor.filterState(this.state);
 
       // Only store state if it has changed.
-      if (!_.isEqual(filteredState, filterState(this.state))) {
-        this.state = state;
+      if (!_.isEqual(filteredNewState, filteredCurrentState)) {
+        this.state = newState;
 
-        const serializedState = JSON.stringify(filteredState);
+        const serializedState = JSON.stringify(filteredNewState);
         localStorage.setItem('state', serializedState);
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
     }
   }
