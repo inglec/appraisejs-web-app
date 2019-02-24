@@ -6,7 +6,7 @@ export default class StateLoader {
   }
 
   static filterState(state) {
-    return _.pick(state, ['authentication']);
+    return _.pick(state, ['auth']);
   }
 
   loadState() {

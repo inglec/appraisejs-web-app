@@ -1,10 +1,8 @@
 import _ from 'lodash';
 
-import {
-  getInstallationRepos,
-  getInstallations,
-} from 'appraisejs-utils/github_api';
+import { getInstallationRepos, getInstallations } from 'appraisejs-utils/github_api';
 import { createAction } from 'appraisejs-utils/redux';
+import { selectAuth } from 'appraisejs-redux/selectors';
 
 // Action types.
 export const FETCH_INSTALLATIONS_FAILURE = 'FETCH_INSTALLATIONS_FAILURE';
@@ -23,7 +21,7 @@ export const fetchInstallations = () => {
   return (dispatch, getState) => {
     dispatch(createAction(FETCH_INSTALLATIONS_STARTED));
 
-    const { token, tokenType } = getState().authentication;
+    const { token, tokenType } = selectAuth(getState());
 
     // Get the user's installations.
     getInstallations(tokenType, token)
@@ -35,7 +33,7 @@ export const fetchInstallations = () => {
 
         dispatch(success(obj));
       })
-      .catch(err => dispatch(failure(err)));
+      .catch(error => dispatch(failure(error)));
   };
 };
 
@@ -56,7 +54,7 @@ export const fetchReposInInstallation = (installationId) => {
 
     dispatch(createAction(FETCH_REPOSITORIES_STARTED));
 
-    const { token, tokenType } = state.authentication;
+    const { token, tokenType } = selectAuth(state);
 
     // Get the repositories accessible by an installation.
     getInstallationRepos(tokenType, token, installationId)
@@ -76,6 +74,6 @@ export const fetchReposInInstallation = (installationId) => {
 
         dispatch(success(obj));
       })
-      .catch(err => dispatch(failure(err)));
+      .catch(error => dispatch(failure(error)));
   };
 };

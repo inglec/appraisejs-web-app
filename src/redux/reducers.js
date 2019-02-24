@@ -10,7 +10,7 @@ import {
   FETCH_REPOSITORIES_SUCCESS,
 } from './actions';
 
-const authentication = (state = {}, action) => {
+const auth = (state = {}, action) => {
   switch (action.type) {
     case AUTHENTICATE:
       return {
@@ -102,7 +102,7 @@ const repositories = (state = {}, action) => {
 };
 
 export default combineReducers({
-  authentication,
+  auth,
   benchmarkResults,
   benchmarksByCommit,
   commitsByRepository,
