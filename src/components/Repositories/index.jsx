@@ -1,4 +1,6 @@
-import _ from 'lodash';
+import { map } from 'lodash/collection';
+import { isEmpty } from 'lodash/lang';
+import { pick } from 'lodash/object';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
@@ -6,7 +8,7 @@ import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
 import { toCamelCaseKeys } from 'appraisejs-utils/objects';
 
 import RepositoryTile from './RepositoryTile';
-import './styles.less';
+import './styles';
 
 class Repositories extends Component {
   componentDidMount() {
@@ -14,7 +16,7 @@ class Repositories extends Component {
     const { installationId } = match.params;
 
     if (installationId) {
-      if (_.isEmpty(reposByInstallation[installationId])) {
+      if (isEmpty(reposByInstallation[installationId])) {
         fetchReposInInstallation(installationId);
       }
     }
@@ -29,12 +31,10 @@ class Repositories extends Component {
     } = this.props;
     const { installationId } = match.params;
 
-    const installationRepos = isLoaded
-      ? reposByInstallation[installationId].reduce((acc, repoId) => {
-        acc[repoId] = repositories[repoId];
-        return acc;
-      }, {})
-      : {};
+    const installationRepos = reposByInstallation[installationId].reduce((acc, repoId) => {
+      acc[repoId] = repositories[repoId];
+      return acc;
+    }, {});
 
     let path = match.url;
     if (path[path.length - 1] === '/') {
@@ -44,22 +44,24 @@ class Repositories extends Component {
     return (
       <div className="repositories">
         {
-          _.map(installationRepos, (repository, id) => {
-            const owner = toCamelCaseKeys(
-              _.pick(repository.owner, ['avatar_url', 'html_url', 'login']),
-            );
+          isLoaded
+            ? map(installationRepos, (repository, id) => {
+              const owner = toCamelCaseKeys(
+                pick(repository.owner, ['avatar_url', 'html_url', 'login']),
+              );
 
-            const props = {
-              id,
-              key: id,
-              name: repository.name,
-              owner,
-              path,
-              isPrivate: repository.private,
-            };
+              const props = {
+                id,
+                key: id,
+                name: repository.name,
+                owner,
+                path,
+                isPrivate: repository.private,
+              };
 
-            return <RepositoryTile {...props} />;
-          })
+              return <RepositoryTile {...props} />;
+            })
+            : null
         }
       </div>
     );

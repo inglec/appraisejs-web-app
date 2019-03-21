@@ -3,32 +3,36 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 
-import './styles.less';
+import './styles';
 
-const RepositoryTile = ({
-  id,
-  isPrivate,
-  name,
-  owner,
-  path,
-}) => (
-  <div className="repositorytile">
-    <Link to={`${path}/${id}`}>{name}</Link>
-    <img
-      src={owner.avatarUrl}
-      alt={`${name}'s avatar'`}
-      className="repositorytile-avatar"
-    />
-    <a
-      href={owner.htmlUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {owner.login}
-    </a>
-    {isPrivate ? <p>Private</p> : null}
-  </div>
-);
+const RepositoryTile = (props) => {
+  const {
+    id,
+    isPrivate,
+    name,
+    owner,
+    path,
+  } = props;
+
+  return (
+    <div className="repositorytile">
+      <Link to={`${path}/${id}`}>{name}</Link>
+      <img
+        src={owner.avatarUrl}
+        alt={`${name}'s avatar'`}
+        className="repositorytile-avatar"
+      />
+      <a
+        href={owner.htmlUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {owner.login}
+      </a>
+      {isPrivate ? <p>Private</p> : null}
+    </div>
+  );
+};
 
 RepositoryTile.propTypes = {
   id: PropTypes.string.isRequired,

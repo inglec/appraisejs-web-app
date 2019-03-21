@@ -1,5 +1,7 @@
 import { combineReducers } from 'redux';
 
+import { FETCHED, FETCHING, createDataState } from 'appraisejs-utils/redux';
+
 import {
   AUTHENTICATE,
   FETCH_INSTALLATIONS_FAILURE,
@@ -46,17 +48,11 @@ const commitsByRepository = (state = {}, action) => {
 const installations = (state = {}, action) => {
   switch (action.type) {
     case FETCH_INSTALLATIONS_FAILURE:
-      return {
-        error: action.message,
-        isFetching: false,
-      };
+      return createDataState(FETCHED, null, action.error);
     case FETCH_INSTALLATIONS_STARTED:
-      return { isFetching: true };
+      return createDataState(FETCHING);
     case FETCH_INSTALLATIONS_SUCCESS:
-      return {
-        data: action.data,
-        isFetching: false,
-      };
+      return createDataState(FETCHED, action.data);
     default:
       return state;
   }
@@ -67,23 +63,20 @@ const reposByInstallation = (state = {}, action) => {
     case FETCH_REPOSITORIES_FAILURE:
       return {
         ...state,
-        isFetching: false,
-        error: action.message,
+        [action.key]: createDataState(FETCHED, null, action.error),
       };
     case FETCH_REPOSITORIES_STARTED:
       return {
         ...state,
-        isFetching: true,
+        [action.key]: createDataState(FETCHING),
       };
-    case FETCH_REPOSITORIES_SUCCESS:
+    case FETCH_REPOSITORIES_SUCCESS: {
+      const repositoryIds = Object.keys(action.data);
       return {
         ...state,
-        data: {
-          ...state.data,
-          [action.key]: Object.keys(action.data),
-        },
-        isFetching: false,
+        [action.key]: createDataState(FETCHED, repositoryIds),
       };
+    }
     default:
       return state;
   }

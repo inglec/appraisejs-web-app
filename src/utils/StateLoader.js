@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import { isEqual } from 'lodash/lang';
+import { pick } from 'lodash/object';
 
 export default class StateLoader {
   constructor() {
@@ -6,7 +7,7 @@ export default class StateLoader {
   }
 
   static filterState(state) {
-    return _.pick(state, ['auth']);
+    return pick(state, ['auth']);
   }
 
   loadState() {
@@ -31,7 +32,7 @@ export default class StateLoader {
       const filteredCurrentState = this.constructor.filterState(this.state);
 
       // Only store state if it has changed.
-      if (!_.isEqual(filteredNewState, filteredCurrentState)) {
+      if (!isEqual(filteredNewState, filteredCurrentState)) {
         this.state = newState;
 
         const serializedState = JSON.stringify(filteredNewState);

@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import { map } from 'lodash/collection';
+import { isEmpty } from 'lodash/lang';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
@@ -9,7 +10,7 @@ class Installations extends Component {
   componentDidMount() {
     const { fetchInstallations, installations } = this.props;
 
-    if (_.isEmpty(installations)) {
+    if (isEmpty(installations)) {
       fetchInstallations();
     }
   }
@@ -25,12 +26,13 @@ class Installations extends Component {
             ? (
               <div className="installations">
                 {
-                  _.map(installations, (installation, id) => (
+                  map(installations, (installation, id) => (
                     <Link
                       key={id}
                       to={`${match.path}/${id}/repositories`}
                     >
-                      {`Installation ${id}`}
+                      {'Installation '}
+                      {id}
                     </Link>
                   ))
                 }
