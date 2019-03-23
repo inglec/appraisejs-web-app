@@ -57,7 +57,7 @@ const App = ({ isAuthenticated }) => {
     };
 
     return isPrivate
-      ? <PrivateRoute isAuthenticated={isAuthenticated} {...props} />
+      ? <PrivateRoute isAuthenticated={isAuthenticated} redirect="/" {...props} />
       : <Route {...props} />;
   });
 

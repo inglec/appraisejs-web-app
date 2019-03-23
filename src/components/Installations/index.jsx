@@ -19,27 +19,29 @@ class Installations extends Component {
     const { installations, isLoaded, match } = this.props;
 
     return (
-      <div>
-        <h1>My Installations</h1>
-        {
-          isLoaded
-            ? (
-              <div className="installations">
-                {
-                  map(installations, (installation, id) => (
-                    <Link
-                      key={id}
-                      to={`${match.path}/${id}/repositories`}
-                    >
-                      {'Installation '}
-                      {id}
-                    </Link>
-                  ))
-                }
-              </div>
-            )
-            : <p>Loading...</p>
-        }
+      <div className="page installations">
+        <div className="page-container">
+          <h1>My Installations</h1>
+          {
+            isLoaded
+              ? (
+                <div className="installations">
+                  {
+                    map(installations, (installation, id) => (
+                      <Link
+                        key={id}
+                        to={`${match.path}/${id}/repositories`}
+                      >
+                        {'Installation '}
+                        {id}
+                      </Link>
+                    ))
+                  }
+                </div>
+              )
+              : <p>Loading...</p>
+          }
+        </div>
       </div>
     );
   }
