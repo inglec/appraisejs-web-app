@@ -4,7 +4,7 @@ import { pick } from 'lodash/object';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
+import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import { toCamelCaseKeys } from 'appraisejs-utils/objects';
 
 import RepositoryTile from './RepositoryTile';
@@ -84,7 +84,7 @@ class Repositories extends Component {
 }
 
 Repositories.propTypes = {
-  ...propTypesRouteComponent,
+  ...routePropTypes,
   fetchReposInInstallation: PropTypes.func.isRequired,
   isLoaded: PropTypes.bool.isRequired,
 

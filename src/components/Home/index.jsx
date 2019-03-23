@@ -3,7 +3,7 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 
-import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
+import { routePropTypes } from 'appraisejs-proptypes/react_router';
 
 import './styles';
 
@@ -32,7 +32,7 @@ const Home = ({ history, isAuthenticated }) => {
 };
 
 Home.propTypes = {
-  ...propTypesRouteComponent,
+  ...routePropTypes,
   isAuthenticated: PropTypes.bool.isRequired,
 };
 

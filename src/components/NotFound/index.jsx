@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
+import { routePropTypes } from 'appraisejs-proptypes/react_router';
 
 const NotFound = () => (
   <div className="page notfound">
@@ -10,6 +10,6 @@ const NotFound = () => (
   </div>
 );
 
-NotFound.propTypes = propTypesRouteComponent;
+NotFound.propTypes = routePropTypes;
 
 export default NotFound;

@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import { Redirect } from 'react-router-dom';
 
 import Spinner from 'appraisejs-components/Spinner';
-import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
+import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import { getAccessToken } from 'appraisejs-utils/github_api';
 
 import './styles';
@@ -85,7 +85,7 @@ class Callback extends Component {
 }
 
 Callback.propTypes = {
-  ...propTypesRouteComponent,
+  ...routePropTypes,
   hasAccessToken: PropTypes.bool.isRequired,
   onReceiveAccessToken: PropTypes.func.isRequired,
 };

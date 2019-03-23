@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 import { Redirect } from 'react-router-dom';
 
 import Spinner from 'appraisejs-components/Spinner';
-import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
+import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import { oAuthUrl } from 'appraisejs-utils/github_api';
 
 import './styles';
@@ -42,7 +42,7 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  ...propTypesRouteComponent,
+  ...routePropTypes,
   isAuthenticated: PropTypes.bool.isRequired,
 };
 

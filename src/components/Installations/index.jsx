@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
+import { routePropTypes } from 'appraisejs-proptypes/react_router';
+import { statusPropType, installationPropTypes } from 'appraisejs-proptypes/redux';
 
 class Installations extends Component {
   componentDidMount() {
@@ -48,14 +49,15 @@ class Installations extends Component {
 }
 
 Installations.propTypes = {
-  ...propTypesRouteComponent,
+  ...routePropTypes,
   fetchInstallations: PropTypes.func.isRequired,
-  isLoaded: PropTypes.bool.isRequired,
-
-  // FIX
-  installations: PropTypes.objectOf(PropTypes.any),
+  installations: PropTypes.exact({
+    data: PropTypes.objectOf(
+      PropTypes.exact(installationPropTypes),
+    ),
+    error: PropTypes.string,
+    status: statusPropType,
+  }).isRequired,
 };
-
-Installations.defaultProps = { installations: {} };
 
 export default Installations;

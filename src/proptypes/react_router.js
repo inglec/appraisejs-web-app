@@ -1,22 +1,22 @@
 import PropTypes from 'prop-types';
 
-const computedMatch = PropTypes.exact({
+const computedMatchPropTypes = {
   isExact: PropTypes.bool.isRequired,
   params: PropTypes.object.isRequired,
   path: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
-});
+};
 
-const location = PropTypes.exact({
+const locationPropTypes = {
   hash: PropTypes.string.isRequired,
   pathname: PropTypes.string.isRequired,
   search: PropTypes.string.isRequired,
 
   key: PropTypes.string,
   state: PropTypes.shape({ from: PropTypes.object }),
-});
+};
 
-const history = PropTypes.exact({
+const historyPropTypes = {
   action: PropTypes.string.isRequired,
   block: PropTypes.func.isRequired,
   createHref: PropTypes.func.isRequired,
@@ -25,29 +25,23 @@ const history = PropTypes.exact({
   goForward: PropTypes.func.isRequired,
   length: PropTypes.number.isRequired,
   listen: PropTypes.func.isRequired,
-  location: location.isRequired,
+  location: PropTypes.exact(locationPropTypes).isRequired,
   push: PropTypes.func.isRequired,
   replace: PropTypes.func.isRequired,
-});
+};
 
-const match = PropTypes.exact({
-  isExact: PropTypes.bool,
+const matchPropTypes = {
   params: PropTypes.object.isRequired,
   path: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
-});
 
-export const propTypesRoute = {
-  component: PropTypes.func.isRequired,
-  computedMatch: computedMatch.isRequired,
-  location: location.isRequired,
-  path: PropTypes.string.isRequired,
-
-  exact: PropTypes.bool,
+  isExact: PropTypes.bool,
 };
 
-export const propTypesRouteComponent = {
-  match: match.isRequired,
-  location: location.isRequired,
-  history: history.isRequired,
+export const routePropTypes = {
+  match: PropTypes.exact(matchPropTypes).isRequired,
+  location: PropTypes.exact(locationPropTypes).isRequired,
+  history: PropTypes.exact(historyPropTypes).isRequired,
+
+  computedMatch: PropTypes.exact(computedMatchPropTypes),
 };

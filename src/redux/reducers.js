@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 
-import { toCamelCaseKeys } from 'appraisejs-utils/objects';
 import { FETCHED, FETCHING, createDataState } from 'appraisejs-utils/redux';
 
 import {
@@ -108,7 +107,7 @@ const user = (state = {}, action) => {
     case FETCH_USER_STARTED:
       return createDataState(FETCHING);
     case FETCH_USER_SUCCESS:
-      return createDataState(FETCHED, toCamelCaseKeys(action.data));
+      return createDataState(FETCHED, action.data);
     case LOGOUT:
       return {};
     default:

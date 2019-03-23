@@ -6,7 +6,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { withRouter } from 'react-router-dom';
 
-import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
+import { routePropTypes } from 'appraisejs-proptypes/react_router';
+import { statusPropType, userPropTypes } from 'appraisejs-proptypes/redux';
 
 import './styles';
 
@@ -104,16 +105,21 @@ class AppNavbar extends Component {
 }
 
 AppNavbar.propTypes = {
-  ...propTypesRouteComponent,
+  ...routePropTypes,
   fetchUser: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
+  onClickLogout: PropTypes.func.isRequired,
   routes: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
     }),
   ).isRequired,
-  onClickLogout: PropTypes.func.isRequired,
+  user: PropTypes.exact({
+    data: PropTypes.exact(userPropTypes),
+    error: PropTypes.string,
+    status: statusPropType,
+  }).isRequired,
 };
 
 export default withRouter(AppNavbar);

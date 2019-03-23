@@ -4,6 +4,8 @@ import { getInstallationRepos, getInstallations, getUser } from 'appraisejs-util
 import { createAction } from 'appraisejs-utils/redux';
 import { selectAuth } from 'appraisejs-redux/selectors';
 
+import { toCamelCaseKeys } from 'appraisejs-utils/objects';
+
 // Action types
 export const FETCH_INSTALLATIONS_FAILURE = 'FETCH_INSTALLATIONS_FAILURE';
 export const FETCH_INSTALLATIONS_STARTED = 'FETCH_INSTALLATIONS_STARTED';
@@ -26,7 +28,7 @@ export const fetchUser = () => {
 
     getUser(tokenType, token)
       .then(({ data }) => {
-        const user = pick(data, 'avatar_url', 'html_url', 'id', 'login', 'name');
+        const user = toCamelCaseKeys(pick(data, 'avatar_url', 'html_url', 'id', 'login', 'name'));
         dispatch(success(user));
       })
       .catch(error => dispatch(failure(error)));
@@ -45,8 +47,11 @@ export const fetchInstallations = () => {
     // Get the user's installations.
     getInstallations(tokenType, token)
       .then(({ data }) => {
-        const installations = data.installations.reduce((acc, installation) => {
-          acc[installation.id] = pick(installation, 'account', 'app_id');
+        const installations = data.installations.reduce((acc, { account, app_id: appId, id }) => {
+          acc[id] = {
+            account: toCamelCaseKeys(pick(account, 'avatar_url', 'id', 'login', 'html_url')),
+            appId,
+          };
           return acc;
         }, {});
 
@@ -75,14 +80,16 @@ export const fetchReposInInstallation = (installationId) => {
     getInstallationRepos(tokenType, token, installationId)
       .then(({ data }) => {
         const repositories = data.repositories.reduce((acc, repository) => {
-          acc[repository.id] = pick(repository, [
-            'description',
-            'html_url',
-            'name',
-            'owner',
-            'private',
-            'updated_at',
-          ]);
+          acc[repository.id] = toCamelCaseKeys(
+            pick(repository, [
+              'description',
+              'html_url',
+              'name',
+              'owner',
+              'private',
+              'updated_at',
+            ]),
+          );
 
           return acc;
         }, {});

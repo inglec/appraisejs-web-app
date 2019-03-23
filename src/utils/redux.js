@@ -6,4 +6,4 @@ export const createAction = (type, fields) => ({
 export const FETCHING = 'fetching';
 export const FETCHED = 'fetched';
 
-export const createDataState = (state, data, error) => ({ state, data, error });
+export const createDataState = (status, data, error) => ({ status, data, error });
