@@ -1,11 +1,24 @@
-.navbar-brand {
-  cursor: pointer;
-}
+@error-colour: red;
 
-.dropdown-title {
-  img {
-    border-radius: 2px;
-    height: 23px;
-    margin-right: 5px;
+.navbar {
+  .navbar-brand {
+    cursor: pointer;
   }
+
+  .dropdown {
+    img {
+      border-radius: 2px;
+      height: 22px;
+      width: 22px;
+    }
+  }
+
+  .logout {
+    color: @error-colour;
+
+    &:hover {
+      color: @error-colour;
+    }
+  }
+
 }

@@ -2,7 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Jumbotron from 'react-bootstrap/Jumbotron';
+import LinkIcon from 'react-feather/dist/icons/link';
 
+import IconedText from 'appraisejs-components/IconedText';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
 
 import './styles';
@@ -11,7 +13,7 @@ const Home = ({ history, isAuthenticated }) => {
   let buttonMessage = 'Log In via GitHub';
   let buttonHref = '/login';
   if (isAuthenticated) {
-    buttonMessage = 'My Installations';
+    buttonMessage = <IconedText icon={LinkIcon}>My Installations</IconedText>;
     buttonHref = '/installations';
   }
 

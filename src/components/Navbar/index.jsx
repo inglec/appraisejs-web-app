@@ -4,8 +4,12 @@ import React, { Component } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import GitHubIcon from 'react-feather/dist/icons/github';
+import LoginIcon from 'react-feather/dist/icons/log-in';
+import LogoutIcon from 'react-feather/dist/icons/log-out';
 import { withRouter } from 'react-router-dom';
 
+import IconedText from 'appraisejs-components/IconedText';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import { statusPropType, userPropTypes } from 'appraisejs-proptypes/redux';
 
@@ -31,17 +35,20 @@ class AppNavbar extends Component {
   renderNavLinks() {
     const { history, location, routes } = this.props;
 
-    return routes.map(({ name, path, exact }) => {
+    return routes.map((route) => {
+      const {
+        icon: Icon,
+        exact,
+        name,
+        path,
+      } = route;
+
       const regex = new RegExp(`^${path}${exact ? '$' : ''}`);
       const active = !!regex.exec(location.pathname);
 
       return (
-        <Nav.Link
-          key={name}
-          active={active}
-          onClick={() => history.push(path)}
-        >
-          {name}
+        <Nav.Link key={name} active={active} onClick={() => history.push(path)}>
+          {Icon ? <IconedText icon={Icon}>{name}</IconedText> : name}
         </Nav.Link>
       );
     });
@@ -62,25 +69,35 @@ class AppNavbar extends Component {
       name,
     } = user.data || {};
 
-    const dropdownTitle = (
-      <span className="dropdown-title">
-        {avatarUrl ? <img src={avatarUrl} alt="avatar" /> : null}
-        <span>{name || login || 'Me'}</span>
-      </span>
-    );
+    const displayName = name || login || 'Me';
+    const dropdownTitle = avatarUrl
+      ? (
+        <span>
+          <img src={avatarUrl} alt="avatar" className="icon" />
+          {displayName}
+        </span>
+      )
+      : displayName;
 
     return (
       isAuthenticated
         ? (
           <NavDropdown alignRight title={dropdownTitle}>
             <NavDropdown.Item href={htmlUrl} target="_blank" rel="noopener noreferrer">
-              My GitHub
+              <IconedText icon={GitHubIcon}>My GitHub</IconedText>
             </NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item onClick={() => onClickLogout()}>Log Out</NavDropdown.Item>
+            <NavDropdown.Item className="logout" onClick={() => onClickLogout()}>
+              <IconedText icon={LogoutIcon}>Log Out</IconedText>
+            </NavDropdown.Item>
           </NavDropdown>
         )
-        : <Nav.Link onClick={() => history.push('/login')}>Log In</Nav.Link>
+        : (
+          <Nav.Link onClick={() => history.push('/login')}>
+            <LoginIcon className="icon" />
+            Log In
+          </Nav.Link>
+        )
     );
   }
 
@@ -113,6 +130,9 @@ AppNavbar.propTypes = {
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
+
+      exact: PropTypes.bool,
+      icon: PropTypes.func,
     }),
   ).isRequired,
   user: PropTypes.exact({

@@ -2,6 +2,8 @@ import { pick } from 'lodash/object';
 import PrivateRoute from 'react-private-route';
 import PropTypes from 'prop-types';
 import React from 'react';
+import HomeIcon from 'react-feather/dist/icons/home';
+import InstallationsIcon from 'react-feather/dist/icons/grid';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Navbar from 'appraisejs-containers/Navbar';
@@ -20,6 +22,7 @@ const routes = [
     exact: true,
     component: Home,
     navbar: true,
+    icon: HomeIcon,
   },
   {
     name: 'Callback',
@@ -37,6 +40,7 @@ const routes = [
     component: Installations,
     isPrivate: true,
     navbar: true,
+    icon: InstallationsIcon,
   },
   {
     name: 'Not Found',
