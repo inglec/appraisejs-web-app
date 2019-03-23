@@ -1,12 +1,13 @@
 import { createAction } from 'appraisejs-utils/redux';
 
-export const AUTHENTICATE = 'AUTHENTICATE';
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 
-export const setAuth = (tokenType, token) => (
-  createAction(AUTHENTICATE, {
+export const createLogin = (tokenType, token) => (
+  createAction(LOGIN, {
     token,
     tokenType,
   })
 );
 
-export const clearAuth = () => setAuth(null, null);
+export const logout = createAction(LOGOUT);

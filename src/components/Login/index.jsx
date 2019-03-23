@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Card from 'react-bootstrap/Card';
 import { Redirect } from 'react-router-dom';
-import { ClipLoader as Spinner } from 'react-spinners';
 
+import Spinner from 'appraisejs-components/Spinner';
 import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
 import { oAuthUrl } from 'appraisejs-utils/github_api';
 
@@ -32,9 +32,7 @@ class Login extends Component {
               <Card.Body>
                 <Card.Title>Redirecting You to GitHub</Card.Title>
                 <Card.Text>This should just take a second</Card.Text>
-                <div className="spinner">
-                  <Spinner color="steelblue" size="80" />
-                </div>
+                <Spinner />
               </Card.Body>
             </Card>
           </div>

@@ -1,46 +1,79 @@
+import { pick } from 'lodash/object';
 import PrivateRoute from 'react-private-route';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+import Navbar from 'appraisejs-containers/Navbar';
+import NotFound from 'appraisejs-components/NotFound';
 import Callback from 'appraisejs-containers/Callback';
 import Home from 'appraisejs-containers/Home';
 import Installations from 'appraisejs-containers/Installations';
 import Login from 'appraisejs-containers/Login';
-import Repositories from 'appraisejs-containers/Repositories';
-import Repository from 'appraisejs-containers/Repository';
 
 import './styles';
 
-const App = ({ isAuthenticated }) => (
-  <div id="app">
+const routes = [
+  {
+    name: 'Home',
+    path: '/',
+    exact: true,
+    component: Home,
+    navbar: true,
+  },
+  {
+    name: 'Callback',
+    path: '/callback',
+    component: Callback,
+  },
+  {
+    name: 'Login',
+    path: '/login',
+    component: Login,
+  },
+  {
+    name: 'Installations',
+    path: '/installations',
+    component: Installations,
+    isPrivate: true,
+    navbar: true,
+  },
+  {
+    name: 'Not Found',
+    component: NotFound,
+  },
+];
+
+const App = ({ isAuthenticated }) => {
+  const navbarRoutes = routes.filter(({ isPrivate, navbar }) => (
+    navbar && (!isPrivate || (isPrivate && isAuthenticated))
+  ));
+
+  const routeComponents = routes.map((route) => {
+    const { isPrivate, name } = route;
+    const props = {
+      ...pick(route, 'component', 'exact', 'path'),
+      key: name,
+    };
+
+    return isPrivate
+      ? <PrivateRoute isAuthenticated={isAuthenticated} {...props} />
+      : <Route {...props} />;
+  });
+
+  return (
     <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/callback" component={Callback} />
-        <Route path="/login" component={Login} />
-        <PrivateRoute
-          exact
-          path="/installations"
-          isAuthenticated={isAuthenticated}
-          component={Installations}
-        />
-        <PrivateRoute
-          path="/installations/:installationId/repositories"
-          exact
-          isAuthenticated={isAuthenticated}
-          component={Repositories}
-        />
-        <PrivateRoute
-          path="/installations/:installationId/repositories/:repositoryId"
-          isAuthenticated={isAuthenticated}
-          component={Repository}
-        />
-        <Route component={() => '404'} />
-      </Switch>
+      <div id="app">
+        <Switch>
+          <Navbar routes={navbarRoutes} />
+        </Switch>
+        <Switch>
+          {routeComponents}
+        </Switch>
+      </div>
     </BrowserRouter>
-  </div>
-);
+  );
+};
 
 App.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,

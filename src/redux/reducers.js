@@ -1,24 +1,31 @@
 import { combineReducers } from 'redux';
 
+import { toCamelCaseKeys } from 'appraisejs-utils/objects';
 import { FETCHED, FETCHING, createDataState } from 'appraisejs-utils/redux';
 
 import {
-  AUTHENTICATE,
+  LOGIN,
+  LOGOUT,
   FETCH_INSTALLATIONS_FAILURE,
   FETCH_INSTALLATIONS_STARTED,
   FETCH_INSTALLATIONS_SUCCESS,
   FETCH_REPOSITORIES_FAILURE,
   FETCH_REPOSITORIES_STARTED,
   FETCH_REPOSITORIES_SUCCESS,
+  FETCH_USER_FAILURE,
+  FETCH_USER_STARTED,
+  FETCH_USER_SUCCESS,
 } from './actions';
 
 const auth = (state = {}, action) => {
   switch (action.type) {
-    case AUTHENTICATE:
+    case LOGIN:
       return {
         token: action.token,
         tokenType: action.tokenType,
       };
+    case LOGOUT:
+      return {};
     default:
       return state;
   }
@@ -94,6 +101,21 @@ const repositories = (state = {}, action) => {
   }
 };
 
+const user = (state = {}, action) => {
+  switch (action.type) {
+    case FETCH_USER_FAILURE:
+      return createDataState(FETCHED, null, action.error);
+    case FETCH_USER_STARTED:
+      return createDataState(FETCHING);
+    case FETCH_USER_SUCCESS:
+      return createDataState(FETCHED, toCamelCaseKeys(action.data));
+    case LOGOUT:
+      return {};
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   auth,
   benchmarkResults,
@@ -102,4 +124,5 @@ export default combineReducers({
   installations,
   reposByInstallation,
   repositories,
+  user,
 });

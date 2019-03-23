@@ -14,9 +14,25 @@ body {
 .statuscard {
   box-shadow: silver 5px 5px 10px;
   min-width: 500px;
+
+  .spinner {
+    display: flex;
+    justify-content: center;
+    margin: 50px;
+  }
+}
+
+.navbar {
+  margin-bottom: 20px;
 }
 
 .page {
+  display: flex;
   flex: auto;
-  padding-top: 20px;
+  justify-content: center;
+
+  .page-container {
+    flex: auto;
+    max-width: 1000px;
+  }
 }

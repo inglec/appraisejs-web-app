@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 
 import Callback from 'appraisejs-components/Callback';
-import { setAuth } from 'appraisejs-redux/actions';
-import { selectAuth } from 'appraisejs-redux/selectors';
+import { createLogin } from 'appraisejs-redux/actions';
+import { selectIsAuthenticated } from 'appraisejs-redux/selectors';
 
 const mapDispatchToProps = dispatch => ({
-  onReceiveAccessToken: (type, token) => dispatch(setAuth(type, token)),
+  onReceiveAccessToken: (type, token) => dispatch(createLogin(type, token)),
 });
 
-const mapStateToProps = state => ({ hasAccessToken: !!selectAuth(state).token });
+const mapStateToProps = state => ({ hasAccessToken: selectIsAuthenticated(state) });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Callback);

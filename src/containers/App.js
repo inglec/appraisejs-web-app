@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 
 import App from 'appraisejs-components/App';
-import { selectAuth } from 'appraisejs-redux/selectors';
+import { selectIsAuthenticated } from 'appraisejs-redux/selectors';
 
-const mapStateToProps = state => ({ isAuthenticated: !!selectAuth(state).token });
+const mapStateToProps = state => ({ isAuthenticated: selectIsAuthenticated(state) });
 
 export default connect(mapStateToProps)(App);

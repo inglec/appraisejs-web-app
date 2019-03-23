@@ -5,6 +5,7 @@ import Alert from 'react-bootstrap/Alert';
 import Card from 'react-bootstrap/Card';
 import { Redirect } from 'react-router-dom';
 
+import Spinner from 'appraisejs-components/Spinner';
 import { propTypesRouteComponent } from 'appraisejs-proptypes/react_router';
 import { getAccessToken } from 'appraisejs-utils/github_api';
 
@@ -30,6 +31,7 @@ class Callback extends Component {
         .then((response) => {
           const {
             access_token: accessToken,
+            error_description: errorDescription,
             token_type: tokenType,
           } = response.data;
 
@@ -38,16 +40,18 @@ class Callback extends Component {
           } else {
             // eslint-disable-next-line no-console
             console.error(response.data);
-            this.setState({ error: 'No access token was returned by the server' });
+
+            const error = errorDescription || 'No access token was returned by the server.';
+            this.setState({ error });
           }
         })
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error);
-          this.setState({ error: 'An error occurred when requesting your access token' });
+          this.setState({ error: 'An error occurred when requesting your access token.' });
         });
     } else {
-      this.setState({ error: 'No code was passed to the URL parameters' });
+      this.setState({ error: 'No code was passed to the URL parameters.' });
     }
   }
 
@@ -65,10 +69,12 @@ class Callback extends Component {
           <Card className="statuscard">
             <Card.Body>
               <Card.Title>Logging You In via GitHub</Card.Title>
-              {error
-                ? <Alert variant="danger">{error}</Alert>
-                : <Card.Text>Please wait while we retrieve your access token</Card.Text>
+              {
+                error
+                  ? <Alert variant="danger">{error}</Alert>
+                  : <Card.Text>Please wait while we retrieve your access token</Card.Text>
               }
+              {error ? null : <Spinner /> }
               <Card.Link href="" onClick={() => history.push('/')}>Return Home</Card.Link>
             </Card.Body>
           </Card>

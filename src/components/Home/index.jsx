@@ -17,7 +17,7 @@ const Home = ({ history, isAuthenticated }) => {
 
   return (
     <div className="page home">
-      <div className="home-container">
+      <div className="page-container">
         <Jumbotron>
           <h1>
             {'Welcome to '}

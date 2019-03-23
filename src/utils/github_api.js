@@ -8,7 +8,7 @@ export const GITHUB_API_URL = 'https://api.github.com';
 export const GITHUB_APPS_MEDIA_TYPE = 'application/vnd.github.machine-man-preview+json';
 
 export const getAccessToken = code => (
-  axios.request({
+  axios({
     method: 'POST',
     baseURL: config.serverUrl,
     url: '/authenticate',
@@ -17,7 +17,7 @@ export const getAccessToken = code => (
 );
 
 export const getInstallationRepos = (tokenType, token, installationId) => (
-  axios.request({
+  axios({
     method: 'GET',
     baseURL: GITHUB_API_URL,
     url: `/user/installations/${installationId}/repositories`,
@@ -29,7 +29,7 @@ export const getInstallationRepos = (tokenType, token, installationId) => (
 );
 
 export const getInstallations = (tokenType, token) => (
-  axios.request({
+  axios({
     method: 'GET',
     baseURL: GITHUB_API_URL,
     url: '/user/installations',
@@ -37,6 +37,15 @@ export const getInstallations = (tokenType, token) => (
       Accept: GITHUB_APPS_MEDIA_TYPE,
       Authorization: `${tokenType} ${token}`,
     },
+  })
+);
+
+export const getUser = (tokenType, token) => (
+  axios({
+    method: 'GET',
+    baseURL: GITHUB_API_URL,
+    url: '/user',
+    headers: { Authorization: `${tokenType} ${token}` },
   })
 );
 
