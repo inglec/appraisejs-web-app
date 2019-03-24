@@ -8,15 +8,15 @@ import {
   selectRepositories,
 } from 'appraisejs-redux/selectors';
 
-const mapDispatchToProps = dispatch => ({
-  fetchInstallations: () => dispatch(fetchInstallations()),
-  fetchReposInInstallation: installationId => dispatch(fetchReposInInstallation(installationId)),
-});
-
 const mapStateToProps = state => ({
   installations: selectInstallations(state),
   reposByInstallation: selectReposByInstallation(state),
   repositories: selectRepositories(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchInstallations: () => dispatch(fetchInstallations()),
+  fetchReposInInstallation: installationId => dispatch(fetchReposInInstallation(installationId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Repositories);

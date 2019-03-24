@@ -1,12 +1,7 @@
 import { mapValues } from 'lodash/object';
 import { combineReducers } from 'redux';
 
-import {
-  FETCHED,
-  FETCHING,
-  UNFETCHED,
-  createDataState,
-} from 'appraisejs-utils/redux';
+import { FETCHED, FETCHING, createDataState } from 'appraisejs-utils/redux';
 
 import {
   LOGIN,
@@ -17,6 +12,9 @@ import {
   FETCH_REPOSITORIES_FAILURE,
   FETCH_REPOSITORIES_STARTED,
   FETCH_REPOSITORIES_SUCCESS,
+  FETCH_TESTS_FAILURE,
+  FETCH_TESTS_STARTED,
+  FETCH_TESTS_SUCCESS,
   FETCH_USER_FAILURE,
   FETCH_USER_STARTED,
   FETCH_USER_SUCCESS,
@@ -36,34 +34,7 @@ const auth = (state = {}, action) => {
   }
 };
 
-const benchmarkResults = (state = {}, action) => {
-  switch (action.type) {
-    case LOGOUT:
-      return {};
-    default:
-      return state;
-  }
-};
-
-const benchmarksByCommit = (state = {}, action) => {
-  switch (action.type) {
-    case LOGOUT:
-      return {};
-    default:
-      return state;
-  }
-};
-
-const commitsByRepository = (state = {}, action) => {
-  switch (action.type) {
-    case LOGOUT:
-      return {};
-    default:
-      return state;
-  }
-};
-
-const installations = (state = createDataState(UNFETCHED), action) => {
+const installations = (state = createDataState(), action) => {
   switch (action.type) {
     case FETCH_INSTALLATIONS_FAILURE:
       return createDataState(FETCHED, null, action.error);
@@ -72,7 +43,7 @@ const installations = (state = createDataState(UNFETCHED), action) => {
     case FETCH_INSTALLATIONS_SUCCESS:
       return createDataState(FETCHED, action.data);
     case LOGOUT:
-      return createDataState(UNFETCHED);
+      return createDataState();
     default:
       return state;
   }
@@ -97,13 +68,11 @@ const reposByInstallation = (state = {}, action) => {
         [action.key]: createDataState(FETCHED, repositoryIds),
       };
     }
-    case FETCH_INSTALLATIONS_SUCCESS: {
-      const unfetchedInstallations = mapValues(action.data, () => createDataState(UNFETCHED));
+    case FETCH_INSTALLATIONS_SUCCESS:
       return {
         ...state,
-        ...unfetchedInstallations,
+        ...mapValues(action.data, () => createDataState()),
       };
-    }
     case LOGOUT:
       return {};
     default:
@@ -125,7 +94,50 @@ const repositories = (state = {}, action) => {
   }
 };
 
-const user = (state = createDataState(UNFETCHED), action) => {
+const tests = (state = {}, action) => {
+  switch (action.type) {
+    case FETCH_TESTS_SUCCESS:
+      return {
+        ...state,
+        ...action.data,
+      };
+    case LOGOUT:
+      return {};
+    default:
+      return state;
+  }
+};
+
+const testsByRepository = (state = {}, action) => {
+  switch (action.type) {
+    case FETCH_REPOSITORIES_SUCCESS:
+      return {
+        ...mapValues(action.data, () => createDataState()),
+        ...state,
+      };
+    case FETCH_TESTS_FAILURE:
+      return {
+        ...state,
+        [action.key]: createDataState(FETCHED, null, action.errors),
+      };
+    case FETCH_TESTS_STARTED:
+      return {
+        ...state,
+        [action.key]: createDataState(FETCHING),
+      };
+    case FETCH_TESTS_SUCCESS:
+      return {
+        ...state,
+        [action.key]: createDataState(FETCHED, Object.keys(action.data)),
+      };
+    case LOGOUT:
+      return {};
+    default:
+      return state;
+  }
+};
+
+const user = (state = createDataState(), action) => {
   switch (action.type) {
     case FETCH_USER_FAILURE:
       return createDataState(FETCHED, null, action.error);
@@ -134,7 +146,7 @@ const user = (state = createDataState(UNFETCHED), action) => {
     case FETCH_USER_SUCCESS:
       return createDataState(FETCHED, action.data);
     case LOGOUT:
-      return createDataState(UNFETCHED);
+      return createDataState();
     default:
       return state;
   }
@@ -142,11 +154,10 @@ const user = (state = createDataState(UNFETCHED), action) => {
 
 export default combineReducers({
   auth,
-  benchmarkResults,
-  benchmarksByCommit,
-  commitsByRepository,
   installations,
   reposByInstallation,
   repositories,
+  tests,
+  testsByRepository,
   user,
 });

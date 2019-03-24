@@ -1,6 +1,6 @@
 import { forEach, map } from 'lodash/collection';
 import PropTypes from 'prop-types';
-import { parse } from 'query-string';
+import { parse, stringify } from 'query-string';
 import React, { PureComponent } from 'react';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
@@ -10,7 +10,11 @@ import XIcon from 'react-feather/dist/icons/x';
 
 import IconedText from 'appraisejs-components/IconedText';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
-import { installationPropTypes, statusPropType } from 'appraisejs-proptypes/redux';
+import {
+  installationPropTypes,
+  repositoryPropTypes,
+  statusPropType,
+} from 'appraisejs-proptypes/redux';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 
 import './styles';
@@ -23,20 +27,18 @@ class Repositories extends PureComponent {
   }
 
   componentDidMount() {
-    this.installationId = this.getInstallationId();
-
     this.verifyRequiredData();
   }
 
   componentDidUpdate() {
-    this.installationId = this.getInstallationId();
-
     this.verifyRequiredData();
   }
 
-  getInstallationId() {
+  updateSearchParams() {
     const { location } = this.props;
-    return parse(location.search).installationId;
+    const { installationId } = parse(location.search);
+
+    this.installationId = installationId;
   }
 
   verifyRequiredData() {
@@ -100,7 +102,10 @@ class Repositories extends PureComponent {
     const { login } = owner;
     const link = {
       pathname: '/repository',
-      search: `repositoryId=${repositoryId}`,
+      search: stringify({
+        installationId: this.installationId,
+        repositoryId,
+      }),
     };
 
     return (
@@ -154,19 +159,19 @@ class Repositories extends PureComponent {
 
   render() {
     const { history } = this.props;
-    const installationId = this.getInstallationId();
+    this.updateSearchParams();
 
     return (
       <div className="page repositories">
         <div className="page-container">
           <h1>My Repositories</h1>
           {
-            installationId
+            this.installationId
               ? (
                 <span className="selected-installation">
                   <span>Selected installation:</span>
                   <Badge pill variant="danger" onClick={() => history.push('/repositories')}>
-                    <IconedText icon={XIcon}>{installationId}</IconedText>
+                    <IconedText icon={XIcon}>{this.installationId}</IconedText>
                   </Badge>
                 </span>
               )
@@ -196,6 +201,9 @@ Repositories.propTypes = {
       error: PropTypes.string,
       status: statusPropType.isRequired,
     }),
+  ).isRequired,
+  repositories: PropTypes.objectOf(
+    PropTypes.exact(repositoryPropTypes),
   ).isRequired,
 };
 

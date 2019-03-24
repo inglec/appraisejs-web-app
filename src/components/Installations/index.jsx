@@ -1,6 +1,7 @@
 import { map } from 'lodash/collection';
 import { isEmpty } from 'lodash/lang';
 import PropTypes from 'prop-types';
+import { stringify } from 'query-string';
 import React, { PureComponent } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -17,7 +18,7 @@ import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import { installationPropTypes, statusPropType } from 'appraisejs-proptypes/redux';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 
-import { installationUrl } from 'appraisejs-root/config';
+import { urls } from 'appraisejs-root/config';
 
 import './styles';
 
@@ -35,7 +36,7 @@ class Installations extends PureComponent {
     const { login, htmlUrl } = account;
     const link = {
       pathname: '/repositories',
-      search: `?installationId=${installationId}`,
+      search: stringify({ installationId }),
     };
 
     return (
@@ -135,7 +136,7 @@ class Installations extends PureComponent {
           {
             installations.status === FETCHED && isEmpty(installations.data)
               ? (
-                <a href={installationUrl} target="_blank" rel="noopener noreferrer">
+                <a href={urls.github.appraisejs} target="_blank" rel="noopener noreferrer">
                   Install Appraise.js
                 </a>
               )

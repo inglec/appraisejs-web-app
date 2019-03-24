@@ -7,4 +7,4 @@ export const UNFETCHED = 'UNFETCHED';
 export const FETCHING = 'FETCHING';
 export const FETCHED = 'FETCHED';
 
-export const createDataState = (status, data, error) => ({ status, data, error });
+export const createDataState = (status = UNFETCHED, data, error) => ({ data, error, status });

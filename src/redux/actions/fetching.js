@@ -1,6 +1,7 @@
 import { pick } from 'lodash/object';
 
 import { getInstallationRepos, getInstallations, getUser } from 'appraisejs-utils/github_api';
+import { getRepositoryTests } from 'appraisejs-utils/appraisejs_api';
 import { createAction } from 'appraisejs-utils/redux';
 import { selectAuth } from 'appraisejs-redux/selectors';
 
@@ -13,6 +14,9 @@ export const FETCH_INSTALLATIONS_SUCCESS = 'FETCH_INSTALLATIONS_SUCCESS';
 export const FETCH_REPOSITORIES_FAILURE = 'FETCH_REPOSITORIES_FAILURE';
 export const FETCH_REPOSITORIES_STARTED = 'FETCH_REPOSITORIES_STARTED';
 export const FETCH_REPOSITORIES_SUCCESS = 'FETCH_REPOSITORIES_SUCCESS';
+export const FETCH_TESTS_FAILURE = 'FETCH_TESTS_FAILURE';
+export const FETCH_TESTS_STARTED = 'FETCH_TESTS_STARTED';
+export const FETCH_TESTS_SUCCESS = 'FETCH_TESTS_SUCCESS';
 export const FETCH_USER_FAILURE = 'FETCH_USER_FAILURE';
 export const FETCH_USER_STARTED = 'FETCH_USER_STARTED';
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
@@ -26,11 +30,10 @@ export const fetchUser = () => {
   const success = data => createAction(FETCH_USER_SUCCESS, { data });
 
   return (dispatch, getState) => {
-    dispatch(createAction(FETCH_USER_STARTED));
-
     const { token, tokenType } = selectAuth(getState());
 
-    getUser(tokenType, token)
+    dispatch(createAction(FETCH_USER_STARTED));
+    return getUser(tokenType, token)
       .then(({ data }) => {
         const user = toCamelCaseKeys(pick(data, 'avatar_url', 'html_url', 'id', 'login', 'name'));
         dispatch(success(user));
@@ -44,12 +47,11 @@ export const fetchInstallations = () => {
   const success = data => createAction(FETCH_INSTALLATIONS_SUCCESS, { data });
 
   return (dispatch, getState) => {
-    dispatch(createAction(FETCH_INSTALLATIONS_STARTED));
-
     const { token, tokenType } = selectAuth(getState());
 
     // Get the user's installations.
-    getInstallations(tokenType, token)
+    dispatch(createAction(FETCH_INSTALLATIONS_STARTED));
+    return getInstallations(tokenType, token)
       .then(({ data }) => {
         const installations = data.installations.reduce((acc, { account, app_id: appId, id }) => {
           acc[id] = {
@@ -76,12 +78,11 @@ export const fetchReposInInstallation = (installationId) => {
   });
 
   return (dispatch, getState) => {
-    dispatch(createAction(FETCH_REPOSITORIES_STARTED, { key: installationId }));
-
     const { token, tokenType } = selectAuth(getState());
 
-    // Get the repositories accessible by an installation.
-    getInstallationRepos(tokenType, token, installationId)
+    // Get the repositories accessible by an installation
+    dispatch(createAction(FETCH_REPOSITORIES_STARTED, { key: installationId }));
+    return getInstallationRepos(tokenType, token, installationId)
       .then(({ data }) => {
         const repositories = data.repositories.reduce((acc, repository) => {
           const primitiveValues = toCamelCaseKeys(
@@ -96,6 +97,35 @@ export const fetchReposInInstallation = (installationId) => {
         }, {});
 
         dispatch(success(repositories));
+      })
+      .catch(error => dispatch(failure(error)));
+  };
+};
+
+export const fetchTestsInRepository = (repositoryId) => {
+  const failure = error => createAction(FETCH_TESTS_FAILURE, {
+    key: repositoryId,
+    error: error.toString(),
+  });
+  const success = data => createAction(FETCH_TESTS_SUCCESS, {
+    key: repositoryId,
+    data,
+  });
+
+  return (dispatch) => {
+    // Get test results for the passed repository
+    dispatch(createAction(FETCH_TESTS_STARTED, { key: repositoryId }));
+    return getRepositoryTests(repositoryId)
+      .then(({ data }) => {
+        const tests = data.reduce((acc, { testId, globalErrors: errors, ...rest }) => {
+          acc[testId] = {
+            errors,
+            ...rest,
+          };
+          return acc;
+        }, {});
+
+        dispatch(success(tests));
       })
       .catch(error => dispatch(failure(error)));
   };
