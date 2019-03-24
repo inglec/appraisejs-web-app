@@ -2,6 +2,7 @@ import { forEach, map } from 'lodash/collection';
 import PropTypes from 'prop-types';
 import { parse } from 'query-string';
 import React, { PureComponent } from 'react';
+import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import BenchmarksIcon from 'react-feather/dist/icons/bar-chart';
@@ -105,7 +106,10 @@ class Repositories extends PureComponent {
           <Card.Title className="name">
             <a href={htmlUrl} target="_blank" rel="noopener noreferrer">{name}</a>
           </Card.Title>
-          <Card.Subtitle className="mb-2 text-muted owner">{login}</Card.Subtitle>
+          <Card.Subtitle className="mb-2 text-muted owner">
+            {isPrivate ? <Badge pill variant="secondary">private</Badge> : null}
+            {login}
+          </Card.Subtitle>
           <Card.Text className="description">{description}</Card.Text>
           <Button variant="primary" onClick={() => history.push(link)}>
             <IconedText icon={BenchmarksIcon}>View Benchmarks</IconedText>
