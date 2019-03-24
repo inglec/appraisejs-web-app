@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 
-import { FETCHED, FETCHING } from 'appraisejs-utils/redux';
+import { FETCHED, FETCHING, UNFETCHED } from 'appraisejs-utils/redux';
 
-export const statusPropType = PropTypes.oneOf([FETCHED, FETCHING]);
+export const statusPropType = PropTypes.oneOf([FETCHED, FETCHING, UNFETCHED]);
 
 export const authPropTypes = {
   token: PropTypes.string,

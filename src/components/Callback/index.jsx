@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { parse } from 'query-string';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Card from 'react-bootstrap/Card';
 import { Redirect } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { getAccessToken } from 'appraisejs-utils/github_api';
 
 import './styles';
 
-class Callback extends Component {
+class Callback extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -57,7 +57,7 @@ class Callback extends Component {
 
   render() {
     const { error } = this.state;
-    const { hasAccessToken, history } = this.props;
+    const { hasAccessToken } = this.props;
 
     if (hasAccessToken) {
       return <Redirect to="/" />;
@@ -75,7 +75,6 @@ class Callback extends Component {
                   : <Card.Text>Please wait while we retrieve your access token</Card.Text>
               }
               {error ? null : <Spinner /> }
-              <Card.Link href="" onClick={() => history.push('/')}>Return Home</Card.Link>
             </Card.Body>
           </Card>
         </div>

@@ -1,16 +1,22 @@
 import { connect } from 'react-redux';
 
 import Repositories from 'appraisejs-components/Repositories';
-import { fetchReposInInstallation } from 'appraisejs-redux/actions';
+import { fetchInstallations, fetchReposInInstallation } from 'appraisejs-redux/actions';
+import {
+  selectInstallations,
+  selectReposByInstallation,
+  selectRepositories,
+} from 'appraisejs-redux/selectors';
 
 const mapDispatchToProps = dispatch => ({
+  fetchInstallations: () => dispatch(fetchInstallations()),
   fetchReposInInstallation: installationId => dispatch(fetchReposInInstallation(installationId)),
 });
 
 const mapStateToProps = state => ({
-  reposByInstallation: state.reposByInstallation.data,
-  repositories: state.repositories,
-  isLoaded: state.reposByInstallation.isFetching === false,
+  installations: selectInstallations(state),
+  reposByInstallation: selectReposByInstallation(state),
+  repositories: selectRepositories(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Repositories);

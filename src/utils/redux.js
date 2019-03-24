@@ -3,7 +3,8 @@ export const createAction = (type, fields) => ({
   ...fields,
 });
 
-export const FETCHING = 'fetching';
-export const FETCHED = 'fetched';
+export const UNFETCHED = 'UNFETCHED';
+export const FETCHING = 'FETCHING';
+export const FETCHED = 'FETCHED';
 
 export const createDataState = (status, data, error) => ({ status, data, error });

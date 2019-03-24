@@ -1,6 +1,12 @@
+import { mapValues } from 'lodash/object';
 import { combineReducers } from 'redux';
 
-import { FETCHED, FETCHING, createDataState } from 'appraisejs-utils/redux';
+import {
+  FETCHED,
+  FETCHING,
+  UNFETCHED,
+  createDataState,
+} from 'appraisejs-utils/redux';
 
 import {
   LOGIN,
@@ -32,6 +38,8 @@ const auth = (state = {}, action) => {
 
 const benchmarkResults = (state = {}, action) => {
   switch (action.type) {
+    case LOGOUT:
+      return {};
     default:
       return state;
   }
@@ -39,6 +47,8 @@ const benchmarkResults = (state = {}, action) => {
 
 const benchmarksByCommit = (state = {}, action) => {
   switch (action.type) {
+    case LOGOUT:
+      return {};
     default:
       return state;
   }
@@ -46,12 +56,14 @@ const benchmarksByCommit = (state = {}, action) => {
 
 const commitsByRepository = (state = {}, action) => {
   switch (action.type) {
+    case LOGOUT:
+      return {};
     default:
       return state;
   }
 };
 
-const installations = (state = {}, action) => {
+const installations = (state = createDataState(UNFETCHED), action) => {
   switch (action.type) {
     case FETCH_INSTALLATIONS_FAILURE:
       return createDataState(FETCHED, null, action.error);
@@ -59,6 +71,8 @@ const installations = (state = {}, action) => {
       return createDataState(FETCHING);
     case FETCH_INSTALLATIONS_SUCCESS:
       return createDataState(FETCHED, action.data);
+    case LOGOUT:
+      return createDataState(UNFETCHED);
     default:
       return state;
   }
@@ -83,6 +97,15 @@ const reposByInstallation = (state = {}, action) => {
         [action.key]: createDataState(FETCHED, repositoryIds),
       };
     }
+    case FETCH_INSTALLATIONS_SUCCESS: {
+      const unfetchedInstallations = mapValues(action.data, () => createDataState(UNFETCHED));
+      return {
+        ...state,
+        ...unfetchedInstallations,
+      };
+    }
+    case LOGOUT:
+      return {};
     default:
       return state;
   }
@@ -95,12 +118,14 @@ const repositories = (state = {}, action) => {
         ...state,
         ...action.data,
       };
+    case LOGOUT:
+      return {};
     default:
       return state;
   }
 };
 
-const user = (state = {}, action) => {
+const user = (state = createDataState(UNFETCHED), action) => {
   switch (action.type) {
     case FETCH_USER_FAILURE:
       return createDataState(FETCHED, null, action.error);
@@ -109,7 +134,7 @@ const user = (state = {}, action) => {
     case FETCH_USER_SUCCESS:
       return createDataState(FETCHED, action.data);
     case LOGOUT:
-      return {};
+      return createDataState(UNFETCHED);
     default:
       return state;
   }

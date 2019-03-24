@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Card from 'react-bootstrap/Card';
 import { Redirect } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ import { oAuthUrl } from 'appraisejs-utils/github_api';
 
 import './styles';
 
-class Login extends Component {
+class Login extends PureComponent {
   componentDidMount() {
     const { isAuthenticated } = this.props;
 

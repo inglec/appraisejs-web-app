@@ -1,6 +1,5 @@
-import { isEmpty } from 'lodash/lang';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -12,10 +11,11 @@ import { withRouter } from 'react-router-dom';
 import IconedText from 'appraisejs-components/IconedText';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import { statusPropType, userPropTypes } from 'appraisejs-proptypes/redux';
+import { UNFETCHED } from 'appraisejs-utils/redux';
 
 import './styles';
 
-class AppNavbar extends Component {
+class AppNavbar extends PureComponent {
   componentDidMount() {
     this.verifyUser();
   }
@@ -27,7 +27,7 @@ class AppNavbar extends Component {
   verifyUser() {
     const { fetchUser, isAuthenticated, user } = this.props;
 
-    if (isAuthenticated && isEmpty(user)) {
+    if (isAuthenticated && user.status === UNFETCHED) {
       fetchUser();
     }
   }
@@ -138,7 +138,7 @@ AppNavbar.propTypes = {
   user: PropTypes.exact({
     data: PropTypes.exact(userPropTypes),
     error: PropTypes.string,
-    status: statusPropType,
+    status: statusPropType.isRequired,
   }).isRequired,
 };
 

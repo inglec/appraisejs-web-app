@@ -17,8 +17,12 @@ export const FETCH_USER_FAILURE = 'FETCH_USER_FAILURE';
 export const FETCH_USER_STARTED = 'FETCH_USER_STARTED';
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 
+const pickOwnerFields = owner => toCamelCaseKeys(
+  pick(owner, 'avatar_url', 'id', 'login', 'html_url'),
+);
+
 export const fetchUser = () => {
-  const failure = error => createAction(FETCH_USER_FAILURE, { error });
+  const failure = error => createAction(FETCH_USER_FAILURE, { error: error.toString() });
   const success = data => createAction(FETCH_USER_SUCCESS, { data });
 
   return (dispatch, getState) => {
@@ -36,7 +40,7 @@ export const fetchUser = () => {
 };
 
 export const fetchInstallations = () => {
-  const failure = error => createAction(FETCH_INSTALLATIONS_FAILURE, { error });
+  const failure = error => createAction(FETCH_INSTALLATIONS_FAILURE, { error: error.toString() });
   const success = data => createAction(FETCH_INSTALLATIONS_SUCCESS, { data });
 
   return (dispatch, getState) => {
@@ -49,7 +53,7 @@ export const fetchInstallations = () => {
       .then(({ data }) => {
         const installations = data.installations.reduce((acc, { account, app_id: appId, id }) => {
           acc[id] = {
-            account: toCamelCaseKeys(pick(account, 'avatar_url', 'id', 'login', 'html_url')),
+            account: pickOwnerFields(account),
             appId,
           };
           return acc;
@@ -64,7 +68,7 @@ export const fetchInstallations = () => {
 export const fetchReposInInstallation = (installationId) => {
   const failure = error => createAction(FETCH_REPOSITORIES_FAILURE, {
     key: installationId,
-    error,
+    error: error.toString(),
   });
   const success = data => createAction(FETCH_REPOSITORIES_SUCCESS, {
     key: installationId,
@@ -72,7 +76,7 @@ export const fetchReposInInstallation = (installationId) => {
   });
 
   return (dispatch, getState) => {
-    dispatch(createAction(FETCH_REPOSITORIES_STARTED));
+    dispatch(createAction(FETCH_REPOSITORIES_STARTED, { key: installationId }));
 
     const { token, tokenType } = selectAuth(getState());
 
@@ -80,16 +84,13 @@ export const fetchReposInInstallation = (installationId) => {
     getInstallationRepos(tokenType, token, installationId)
       .then(({ data }) => {
         const repositories = data.repositories.reduce((acc, repository) => {
-          acc[repository.id] = toCamelCaseKeys(
-            pick(repository, [
-              'description',
-              'html_url',
-              'name',
-              'owner',
-              'private',
-              'updated_at',
-            ]),
+          const primitiveValues = toCamelCaseKeys(
+            pick(repository, 'description', 'html_url', 'name', 'private'),
           );
+          acc[repository.id] = {
+            ...primitiveValues,
+            owner: pickOwnerFields(repository.owner),
+          };
 
           return acc;
         }, {});

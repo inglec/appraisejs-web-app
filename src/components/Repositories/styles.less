@@ -1,7 +1,19 @@
 .repositories {
   display: flex;
+  flex-wrap: wrap;
 
-  .repositorytile {
-    margin: 10px;
+  .repository {
+    margin: 5px;
+    width: 300px;
+    min-height: 200px;
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+
+      .description {
+        flex: auto;
+      }
+    }
   }
 }

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import HomeIcon from 'react-feather/dist/icons/home';
 import InstallationsIcon from 'react-feather/dist/icons/grid';
+import RepositoriesIcon from 'react-feather/dist/icons/book-open';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Navbar from 'appraisejs-containers/Navbar';
@@ -12,6 +13,8 @@ import Callback from 'appraisejs-containers/Callback';
 import Home from 'appraisejs-containers/Home';
 import Installations from 'appraisejs-containers/Installations';
 import Login from 'appraisejs-containers/Login';
+import Repositories from 'appraisejs-containers/Repositories';
+import Repository from 'appraisejs-containers/Repository';
 
 import './styles';
 
@@ -41,6 +44,20 @@ const routes = [
     isPrivate: true,
     navbar: true,
     icon: InstallationsIcon,
+  },
+  {
+    name: 'Repositories',
+    path: '/repositories',
+    component: Repositories,
+    isPrivate: true,
+    navbar: true,
+    icon: RepositoriesIcon,
+  },
+  {
+    name: 'Repository',
+    path: '/repository',
+    component: Repository,
+    isPrivate: true,
   },
   {
     name: 'Not Found',
