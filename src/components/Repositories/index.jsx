@@ -6,6 +6,7 @@ import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import BenchmarksIcon from 'react-feather/dist/icons/bar-chart';
+import XIcon from 'react-feather/dist/icons/x';
 
 import IconedText from 'appraisejs-components/IconedText';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
@@ -22,10 +23,14 @@ class Repositories extends PureComponent {
   }
 
   componentDidMount() {
+    this.installationId = this.getInstallationId();
+
     this.verifyRequiredData();
   }
 
   componentDidUpdate() {
+    this.installationId = this.getInstallationId();
+
     this.verifyRequiredData();
   }
 
@@ -42,18 +47,16 @@ class Repositories extends PureComponent {
       reposByInstallation,
     } = this.props;
 
-    const installationId = this.getInstallationId();
-
     switch (installations.status) {
       case FETCHED:
-        if (installationId) {
+        if (this.installationId) {
           // Fetch repositories for selected installation
-          switch (reposByInstallation[installationId].status) {
+          switch (reposByInstallation[this.installationId].status) {
             case FETCHED:
               this.setState({ loading: false });
               break;
             case UNFETCHED:
-              fetchReposInInstallation(installationId);
+              fetchReposInInstallation(this.installationId);
               break;
             default:
           }
@@ -107,7 +110,7 @@ class Repositories extends PureComponent {
             <a href={htmlUrl} target="_blank" rel="noopener noreferrer">{name}</a>
           </Card.Title>
           <Card.Subtitle className="mb-2 text-muted owner">
-            {isPrivate ? <Badge pill variant="secondary">private</Badge> : null}
+            {isPrivate ? <Badge variant="secondary">private</Badge> : null}
             {login}
           </Card.Subtitle>
           <Card.Text className="description">{description}</Card.Text>
@@ -127,14 +130,12 @@ class Repositories extends PureComponent {
       return <p>Loading</p>;
     }
 
-    const installationId = this.getInstallationId();
-
     /**
      * Filter repositories to those in the selected installation.
      * If no installation is selected, return all repositories.
      */
-    const filteredRepositories = installationId
-      ? reposByInstallation[installationId].data.reduce((acc, repoId) => {
+    const filteredRepositories = this.installationId
+      ? reposByInstallation[this.installationId].data.reduce((acc, repoId) => {
         acc[repoId] = repositories[repoId];
         return acc;
       }, {})
@@ -152,6 +153,7 @@ class Repositories extends PureComponent {
   }
 
   render() {
+    const { history } = this.props;
     const installationId = this.getInstallationId();
 
     return (
@@ -161,10 +163,12 @@ class Repositories extends PureComponent {
           {
             installationId
               ? (
-                <p>
-                  {'Selected installation: '}
-                  {installationId}
-                </p>
+                <span className="selected-installation">
+                  <span>Selected installation:</span>
+                  <Badge pill variant="danger" onClick={() => history.push('/repositories')}>
+                    <IconedText icon={XIcon}>{installationId}</IconedText>
+                  </Badge>
+                </span>
               )
               : null
           }

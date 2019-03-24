@@ -2,9 +2,17 @@ import { map } from 'lodash/collection';
 import { isEmpty } from 'lodash/lang';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Nav from 'react-bootstrap/Nav';
+import Row from 'react-bootstrap/Row';
+import Tab from 'react-bootstrap/Tab';
+import RepositoriesIcon from 'react-feather/dist/icons/book-open';
+import SettingsIcon from 'react-feather/dist/icons/settings';
 import { ScaleLoader as Loader } from 'react-spinners';
 
+import IconedText from 'appraisejs-components/IconedText';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import { installationPropTypes, statusPropType } from 'appraisejs-proptypes/redux';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
@@ -22,6 +30,57 @@ class Installations extends PureComponent {
     }
   }
 
+  renderInstallation(installationId, { account, appId }) {
+    const { history } = this.props;
+    const { login, htmlUrl } = account;
+    const link = {
+      pathname: '/repositories',
+      search: `?installationId=${installationId}`,
+    };
+
+    return (
+      <Tab.Pane key={installationId} eventKey={installationId} className="installation">
+        <div className="section">
+          <div>
+            <b>App ID</b>
+            {': '}
+            {appId}
+          </div>
+          <div>
+            <b>Installed by</b>
+            {': '}
+            <a href={htmlUrl} target="_blank" rel="noopener noreferrer">{login}</a>
+          </div>
+        </div>
+        <div className="section">
+          <Button onClick={() => history.push(link)}>
+            <IconedText icon={RepositoriesIcon}>View Repositories</IconedText>
+          </Button>
+        </div>
+        <Card>
+          <Card.Body>
+            <Card.Title>Configure Installation</Card.Title>
+            <Card.Text>
+              You can add or remove repositories for this installation.
+              You can also remove this installation from
+              {' '}
+              <b>Appraise.js</b>
+              .
+            </Card.Text>
+            <Button
+              href={`https://github.com/settings/installations/${installationId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="outline-secondary"
+            >
+              <IconedText icon={SettingsIcon}>Configure Installation</IconedText>
+            </Button>
+          </Card.Body>
+        </Card>
+      </Tab.Pane>
+    );
+  }
+
   renderInstallations() {
     const { installations } = this.props;
 
@@ -33,26 +92,36 @@ class Installations extends PureComponent {
       );
     }
 
-    return installations.error
-      ? 'An error occurred'
-      : (
-        <div className="installations">
-          {
-            map(installations.data, (installation, id) => (
-              <Link
-                key={id}
-                to={{
-                  pathname: '/repositories',
-                  search: `?installationId=${id}`,
-                }}
-              >
-                {'Installation '}
-                {id}
-              </Link>
-            ))
-          }
-        </div>
-      );
+    return (
+      <Card className="installations-container">
+        <Card.Body>
+          <Tab.Container defaultActiveKey={Object.keys(installations.data)[0]}>
+            <Row>
+              <Col sm={3}>
+                <Nav variant="pills" className="flex-column">
+                  {
+                    map(installations.data, (installation, installationId) => (
+                      <Nav.Link key={installationId} eventKey={installationId}>
+                        {installationId}
+                      </Nav.Link>
+                    ))
+                }
+                </Nav>
+              </Col>
+              <Col sm={9}>
+                <Tab.Content>
+                  {
+                    map(installations.data, (installation, installationId) => (
+                      this.renderInstallation(installationId, installation)
+                    ))
+                  }
+                </Tab.Content>
+              </Col>
+            </Row>
+          </Tab.Container>
+        </Card.Body>
+      </Card>
+    );
   }
 
   render() {

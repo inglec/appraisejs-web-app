@@ -73,7 +73,7 @@ class AppNavbar extends PureComponent {
     const dropdownTitle = avatarUrl
       ? (
         <span>
-          <img src={avatarUrl} alt="avatar" className="icon" />
+          <img src={avatarUrl} alt={login} className="avatar" />
           {displayName}
         </span>
       )
