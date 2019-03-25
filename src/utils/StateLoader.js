@@ -7,7 +7,7 @@ export default class StateLoader {
   }
 
   static filterState(state) {
-    return pick(state, ['auth']);
+    return pick(state, 'auth');
   }
 
   loadState() {

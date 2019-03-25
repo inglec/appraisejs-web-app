@@ -189,17 +189,19 @@ Repositories.propTypes = {
   fetchInstallations: PropTypes.func.isRequired,
   fetchReposInInstallation: PropTypes.func.isRequired,
   installations: PropTypes.exact({
+    status: statusPropType.isRequired,
+
     data: PropTypes.objectOf(
       PropTypes.exact(installationPropTypes),
     ),
     error: PropTypes.string,
-    status: statusPropType.isRequired,
   }).isRequired,
   reposByInstallation: PropTypes.objectOf(
     PropTypes.exact({
+      status: statusPropType.isRequired,
+
       data: PropTypes.arrayOf(PropTypes.string),
       error: PropTypes.string,
-      status: statusPropType.isRequired,
     }),
   ).isRequired,
   repositories: PropTypes.objectOf(

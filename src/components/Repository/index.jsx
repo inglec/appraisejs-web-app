@@ -1,4 +1,3 @@
-import { pick } from 'lodash';
 import PropTypes from 'prop-types';
 import { parse } from 'query-string';
 import React, { PureComponent } from 'react';
@@ -8,6 +7,7 @@ import {
   installationPropTypes,
   repositoryPropTypes,
   statusPropType,
+  testPropTypes,
 } from 'appraisejs-proptypes/redux';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 
@@ -39,8 +39,10 @@ class Repository extends PureComponent {
     const {
       fetchInstallations,
       fetchReposInInstallation,
+      fetchTestsInRepository,
       installations,
       reposByInstallation,
+      testsByRepository,
     } = this.props;
 
     switch (installations.status) {
@@ -50,7 +52,16 @@ class Repository extends PureComponent {
           switch (reposByInstallation[this.installationId].status) {
             case FETCHED:
               if (reposByInstallation[this.installationId].data.includes(this.repositoryId)) {
-                // Check if commits have been fetched for this repository
+                // Check if tests have been fetched for this repository
+                switch (testsByRepository[this.repositoryId].status) {
+                  case FETCHED:
+                    this.setState({ loaded: true });
+                    break;
+                  case UNFETCHED:
+                    fetchTestsInRepository(this.repositoryId);
+                    break;
+                  default:
+                }
               }
               break;
             case UNFETCHED:
@@ -86,21 +97,34 @@ Repository.propTypes = {
   fetchInstallations: PropTypes.func.isRequired,
   fetchReposInInstallation: PropTypes.func.isRequired,
   installations: PropTypes.exact({
+    status: statusPropType.isRequired,
+
     data: PropTypes.objectOf(
       PropTypes.exact(installationPropTypes),
     ),
     error: PropTypes.string,
-    status: statusPropType.isRequired,
   }).isRequired,
   reposByInstallation: PropTypes.objectOf(
     PropTypes.exact({
+      status: statusPropType.isRequired,
+
       data: PropTypes.arrayOf(PropTypes.string),
       error: PropTypes.string,
-      status: statusPropType.isRequired,
     }),
   ).isRequired,
   repositories: PropTypes.objectOf(
     PropTypes.exact(repositoryPropTypes),
+  ).isRequired,
+  tests: PropTypes.objectOf(
+    PropTypes.exact(testPropTypes),
+  ).isRequired,
+  testsByRepository: PropTypes.objectOf(
+    PropTypes.exact({
+      status: statusPropType.isRequired,
+
+      data: PropTypes.arrayOf(PropTypes.string),
+      error: PropTypes.string,
+    })
   ).isRequired,
 };
 

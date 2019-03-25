@@ -7,6 +7,6 @@ export const getRepositoryTests = repositoryId => (
   axios({
     method: 'GET',
     baseURL: urls.appraisejs.api.base,
-    url: `${urls.appraisejs.api.paths.getTests}${stringify({ repositoryId })}`,
+    url: `${urls.appraisejs.api.paths.getTests}?${stringify({ repositoryId })}`,
   })
 );

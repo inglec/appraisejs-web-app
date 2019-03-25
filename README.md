@@ -39,8 +39,8 @@
     commitId: String,
     endTime: Number,
     errors: arrayOf({
-      stage: String,
       error: String
+      stage: String,
     }),
     owner: String,
     queuedAt: Number,

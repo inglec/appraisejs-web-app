@@ -152,11 +152,12 @@ Installations.propTypes = {
   ...routePropTypes,
   fetchInstallations: PropTypes.func.isRequired,
   installations: PropTypes.exact({
+    status: statusPropType.isRequired,
+
     data: PropTypes.objectOf(
       PropTypes.exact(installationPropTypes),
     ),
     error: PropTypes.string,
-    status: statusPropType.isRequired,
   }).isRequired,
 };
 

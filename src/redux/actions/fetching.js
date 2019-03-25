@@ -117,9 +117,35 @@ export const fetchTestsInRepository = (repositoryId) => {
     dispatch(createAction(FETCH_TESTS_STARTED, { key: repositoryId }));
     return getRepositoryTests(repositoryId)
       .then(({ data }) => {
-        const tests = data.reduce((acc, { testId, globalErrors: errors, ...rest }) => {
+        const tests = data.reduce((acc, test) => {
+          const {
+            benchmarks,
+            errs: testErrors,
+            testId,
+            ...rest
+          } = test;
+
           acc[testId] = {
-            errors,
+            benchmarks: benchmarks.reduce((innerAcc, benchmark) => {
+              const {
+                attempts,
+                benchmarkId,
+                errs: benchmarkErrors,
+                ...benchmarkRest
+              } = benchmark;
+
+              // eslint-disable-next-line no-param-reassign
+              innerAcc[benchmarkId] = {
+                attempts: attempts.map(attempt => attempt.runs),
+                errors: benchmarkErrors,
+                ...benchmarkRest,
+              };
+              return innerAcc;
+            }, {}),
+            errors: testErrors.map(({ errs: stageErrors, stage }) => ({
+              errors: stageErrors,
+              stage,
+            })),
             ...rest,
           };
           return acc;
