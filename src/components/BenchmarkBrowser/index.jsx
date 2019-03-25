@@ -1,6 +1,7 @@
 import { map } from 'lodash/collection';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card';
@@ -13,6 +14,8 @@ import Scrollbar from 'react-perfect-scrollbar';
 import 'react-perfect-scrollbar/dist/css/styles';
 
 import IconedText from 'appraisejs-components/IconedText';
+
+import Tree from './Tree';
 
 import './styles';
 
@@ -29,31 +32,73 @@ class BenchmarkBrowser extends PureComponent {
     const { benchmarks, onSelectBenchmark, selected } = this.props;
     return (
       <ListGroup>
-        <Scrollbar>
-          {
-            map(benchmarks, (benchmark, benchmarkId) => (
-              <ListGroup.Item
-                key={benchmarkId}
-                active={selected === benchmarkId}
-                onClick={() => onSelectBenchmark(benchmarkId)}
-              >
-                {benchmarkId}
-              </ListGroup.Item>
-            ))
-          }
-        </Scrollbar>
+        {
+          map(benchmarks, (benchmark, benchmarkId) => (
+            <ListGroup.Item
+              key={benchmarkId}
+              active={selected === benchmarkId}
+              onClick={() => onSelectBenchmark(benchmarkId)}
+            >
+              {benchmarkId}
+            </ListGroup.Item>
+          ))
+        }
       </ListGroup>
     );
+  }
+
+  renderTree() {
+    const { benchmarksByFilepath } = this.props;
+
+    const formatTree = (tree, parentPath) => {
+      if (Array.isArray(tree)) {
+        return tree.map(filename => ({ name: filename }));
+      }
+
+      return map(tree, (childTree, directory) => {
+        const path = `${parentPath ? `${parentPath}/` : ''}${directory}`;
+        return {
+          children: formatTree(childTree, path),
+          name: directory,
+          toggled: true,
+        };
+      });
+    };
+
+    const data = formatTree(benchmarksByFilepath);
+
+    return <Tree data={data} />;
   }
 
   renderBenchmark() {
     const { benchmarks, selected } = this.props;
     const { benchmarkDefinition, filepath } = benchmarks[selected] || {};
 
+    if (!selected) {
+      return <div className="unselected">Select a benchmark to begin</div>;
+    }
+
     return (
       <div>
-        {filepath}
-        {JSON.stringify(benchmarkDefinition, null, 2)}
+        <Alert variant="info">
+          <b>Filepath</b>
+          {': '}
+          {filepath}
+        </Alert>
+        <Card>
+          <Card.Body>
+            <Card.Title>Benchmark Definition</Card.Title>
+            {
+              map(benchmarkDefinition, (value, key) => (
+                <Card.Text key={key}>
+                  <b>{key}</b>
+                  {': '}
+                  {key === 'timeout' ? `${value}ms` : value}
+                </Card.Text>
+              ))
+            }
+          </Card.Body>
+        </Card>
       </div>
     );
   }
@@ -62,7 +107,7 @@ class BenchmarkBrowser extends PureComponent {
     const { treeBrowser } = this.state;
     return (
       <div className="benchmark-browser">
-        <Card>
+        <Card className="browser-container">
           <Card.Body>
             <Row>
               <Col>
@@ -84,7 +129,9 @@ class BenchmarkBrowser extends PureComponent {
                     </Button>
                   </ButtonGroup>
                 </div>
-                {treeBrowser ? null : this.renderList()}
+                <Scrollbar>
+                  {treeBrowser ? this.renderTree() : this.renderList()}
+                </Scrollbar>
               </Col>
               <Col>
                 {this.renderBenchmark()}

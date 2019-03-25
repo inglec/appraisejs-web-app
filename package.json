@@ -26,6 +26,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
+    "@emotion/core": "^0.13.1",
     "axios": "^0.18.0",
     "camelcase": "^5.0.0",
     "lodash": "^4.17.11",
@@ -41,7 +42,7 @@
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
     "react-spinners": "^0.5.3",
-    "react-treeviewer": "^1.0.0",
+    "react-treebeard": "^3.1.0",
     "recharts": "^1.5.0",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.7",
