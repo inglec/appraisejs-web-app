@@ -50,7 +50,7 @@ class BenchmarkBrowser extends PureComponent {
   }
 
   renderTree() {
-    const { benchmarksByFilepath } = this.props;
+    const { benchmarksByFilepath, onSelectBenchmark } = this.props;
 
     const formatTree = (tree, parentPath) => {
       if (Array.isArray(tree)) {
@@ -69,9 +69,15 @@ class BenchmarkBrowser extends PureComponent {
 
     const data = formatTree(benchmarksByFilepath);
 
+    const onClickNode = (node) => {
+      if (!node.children) {
+        onSelectBenchmark(node.name);
+      }
+    };
+
     return (
       <Scrollbar>
-        <Tree data={data} />
+        <Tree data={data} onClickNode={onClickNode} />
       </Scrollbar>
     );
   }

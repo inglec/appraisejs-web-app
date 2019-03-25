@@ -8,14 +8,19 @@ class Tree extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { cursor: null };
+    this.state = { selected: null };
   }
 
   onToggle(node, toggled) {
-    const { cursor } = this.state;
-    if (cursor) {
-      cursor.active = false;
+    const { selected } = this.state;
+    const { onClickNode } = this.props;
+
+    // Unselect last-selected node
+    if (selected) {
+      selected.active = false;
     }
+
+    onClickNode(node, toggled);
 
     // eslint-disable-next-line no-param-reassign
     node.active = true;
@@ -24,7 +29,7 @@ class Tree extends Component {
       node.toggled = toggled;
     }
 
-    this.setState({ cursor: node });
+    this.setState({ selected: node });
   }
 
   render() {
@@ -44,6 +49,7 @@ class Tree extends Component {
 
 Tree.propTypes = {
   data: PropTypes.array.isRequired,
+  onClickNode: PropTypes.func.isRequired,
 };
 
 export default Tree;
