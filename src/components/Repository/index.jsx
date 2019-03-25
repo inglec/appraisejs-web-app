@@ -8,7 +8,7 @@ import {
   repositoryPropTypes,
   statusPropType,
   testPropTypes,
-  testsByBenchmarkPropTypes
+  testsByBenchmarkPropTypes,
 } from 'appraisejs-proptypes/redux';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 
@@ -35,14 +35,13 @@ class Repository extends PureComponent {
     this.repositoryId = repositoryId;
   }
 
-  // commits -> repositories -> reposByInstallation -> installations
   verifyRequiredData() {
     const {
       fetchInstallations,
-      fetchReposInInstallation,
+      fetchRepositoriesByInstallation,
       fetchTestsInRepository,
       installations,
-      reposByInstallation,
+      repositoriesByInstallation,
       testsByRepository,
     } = this.props;
 
@@ -50,9 +49,10 @@ class Repository extends PureComponent {
       case FETCHED:
         if (this.repositoryId && this.installationId) {
           // Check if repositoryId exists or it just hasn't been fetched yet
-          switch (reposByInstallation[this.installationId].status) {
+          const installationRepositories = repositoriesByInstallation[this.installationId];
+          switch (installationRepositories.status) {
             case FETCHED:
-              if (reposByInstallation[this.installationId].data.includes(this.repositoryId)) {
+              if (installationRepositories.data.includes(this.repositoryId)) {
                 // Check if tests have been fetched for this repository
                 switch (testsByRepository[this.repositoryId].status) {
                   case FETCHED:
@@ -66,7 +66,7 @@ class Repository extends PureComponent {
               }
               break;
             case UNFETCHED:
-              fetchReposInInstallation(this.installationId);
+              fetchRepositoriesByInstallation(this.installationId);
               break;
             default:
           }
@@ -101,7 +101,7 @@ Repository.propTypes = {
     ),
   ).isRequired,
   fetchInstallations: PropTypes.func.isRequired,
-  fetchReposInInstallation: PropTypes.func.isRequired,
+  fetchRepositoriesByInstallation: PropTypes.func.isRequired,
   installations: PropTypes.exact({
     status: statusPropType.isRequired,
 
@@ -110,7 +110,7 @@ Repository.propTypes = {
     ),
     error: PropTypes.string,
   }).isRequired,
-  reposByInstallation: PropTypes.objectOf(
+  repositoriesByInstallation: PropTypes.objectOf(
     PropTypes.exact({
       status: statusPropType.isRequired,
 

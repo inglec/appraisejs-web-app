@@ -49,7 +49,7 @@ const installations = (state = createDataState(), action) => {
   }
 };
 
-const reposByInstallation = (state = {}, action) => {
+const repositoriesByInstallation = (state = {}, action) => {
   switch (action.type) {
     case FETCH_REPOSITORIES_FAILURE:
       return {
@@ -155,7 +155,7 @@ const user = (state = createDataState(), action) => {
 export default combineReducers({
   auth,
   installations,
-  reposByInstallation,
+  repositoriesByInstallation,
   repositories,
   tests,
   testsByRepository,

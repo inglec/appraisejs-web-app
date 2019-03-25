@@ -6,7 +6,7 @@ import { FETCHED } from 'appraisejs-utils/redux';
 
 export const selectAuth = state => state.auth;
 export const selectInstallations = state => state.installations;
-export const selectReposByInstallation = state => state.reposByInstallation;
+export const selectRepositoriesByInstallation = state => state.repositoriesByInstallation;
 export const selectRepositories = state => state.repositories;
 export const selectTests = state => state.tests;
 export const selectTestsByRepository = state => state.testsByRepository;

@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import Repository from 'appraisejs-components/Repository';
 import {
   fetchInstallations,
-  fetchReposInInstallation,
+  fetchRepositoriesByInstallation,
   fetchTestsInRepository,
 } from 'appraisejs-redux/actions';
 import {
   selectBenchmarksByFilepath,
   selectInstallations,
-  selectReposByInstallation,
+  selectRepositoriesByInstallation,
   selectRepositories,
   selectTests,
   selectTestsByBenchmark,
@@ -19,7 +19,7 @@ import {
 const mapStateToProps = state => ({
   benchmarksByFilepath: selectBenchmarksByFilepath(state),
   installations: selectInstallations(state),
-  reposByInstallation: selectReposByInstallation(state),
+  repositoriesByInstallation: selectRepositoriesByInstallation(state),
   repositories: selectRepositories(state),
   tests: selectTests(state),
   testsByBenchmark: selectTestsByBenchmark(state),
@@ -28,7 +28,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchInstallations: () => dispatch(fetchInstallations()),
-  fetchReposInInstallation: installationId => dispatch(fetchReposInInstallation(installationId)),
+  fetchRepositoriesByInstallation: installationId => (
+    dispatch(fetchRepositoriesByInstallation(installationId))
+  ),
   fetchTestsInRepository: repositoryId => dispatch(fetchTestsInRepository(repositoryId)),
 });
 

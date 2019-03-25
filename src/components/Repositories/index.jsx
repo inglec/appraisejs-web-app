@@ -44,21 +44,21 @@ class Repositories extends PureComponent {
   verifyRequiredData() {
     const {
       fetchInstallations,
-      fetchReposInInstallation,
+      fetchRepositoriesByInstallation,
       installations,
-      reposByInstallation,
+      repositoriesByInstallation,
     } = this.props;
 
     switch (installations.status) {
       case FETCHED:
         if (this.installationId) {
           // Fetch repositories for selected installation
-          switch (reposByInstallation[this.installationId].status) {
+          switch (repositoriesByInstallation[this.installationId].status) {
             case FETCHED:
               this.setState({ loading: false });
               break;
             case UNFETCHED:
-              fetchReposInInstallation(this.installationId);
+              fetchRepositoriesByInstallation(this.installationId);
               break;
             default:
           }
@@ -66,7 +66,7 @@ class Repositories extends PureComponent {
           // Fetch repositories for all installations
           const installationIds = Object.keys(installations.data);
           const unfetchedInstallations = installationIds.filter(id => (
-            reposByInstallation[id].status !== FETCHED
+            repositoriesByInstallation[id].status !== FETCHED
           ));
 
           // Allow component to render if all data has been fetched
@@ -75,8 +75,8 @@ class Repositories extends PureComponent {
           }
 
           forEach(unfetchedInstallations, (id) => {
-            if (reposByInstallation[id].status === UNFETCHED) {
-              fetchReposInInstallation(id);
+            if (repositoriesByInstallation[id].status === UNFETCHED) {
+              fetchRepositoriesByInstallation(id);
             }
           });
         }
@@ -129,7 +129,7 @@ class Repositories extends PureComponent {
 
   renderRepositories() {
     const { loading } = this.state;
-    const { reposByInstallation, repositories } = this.props;
+    const { repositoriesByInstallation, repositories } = this.props;
 
     if (loading) {
       return <p>Loading</p>;
@@ -140,7 +140,7 @@ class Repositories extends PureComponent {
      * If no installation is selected, return all repositories.
      */
     const filteredRepositories = this.installationId
-      ? reposByInstallation[this.installationId].data.reduce((acc, repoId) => {
+      ? repositoriesByInstallation[this.installationId].data.reduce((acc, repoId) => {
         acc[repoId] = repositories[repoId];
         return acc;
       }, {})
@@ -187,7 +187,7 @@ class Repositories extends PureComponent {
 Repositories.propTypes = {
   ...routePropTypes,
   fetchInstallations: PropTypes.func.isRequired,
-  fetchReposInInstallation: PropTypes.func.isRequired,
+  fetchRepositoriesByInstallation: PropTypes.func.isRequired,
   installations: PropTypes.exact({
     status: statusPropType.isRequired,
 
@@ -196,7 +196,7 @@ Repositories.propTypes = {
     ),
     error: PropTypes.string,
   }).isRequired,
-  reposByInstallation: PropTypes.objectOf(
+  repositoriesByInstallation: PropTypes.objectOf(
     PropTypes.exact({
       status: statusPropType.isRequired,
 
