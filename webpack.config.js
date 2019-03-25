@@ -15,7 +15,7 @@ module.exports = {
         use: { loader: 'babel-loader' },
       },
       {
-        test: /\.less/,
+        test: /\.(le|c)ss/,
         use: [
           'style-loader',
           'css-loader',
@@ -25,7 +25,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json', '.less'],
+    extensions: ['.css', '.js', '.jsx', '.json', '.less'],
     alias: {
       'appraisejs-root': __dirname,
       'appraisejs-components': path.resolve(__dirname, 'src/components'),

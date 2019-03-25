@@ -1,7 +1,9 @@
+import { get } from 'lodash/object';
 import PropTypes from 'prop-types';
 import { parse } from 'query-string';
 import React, { PureComponent } from 'react';
 
+import BenchmarkBrowser from 'appraisejs-components/BenchmarkBrowser';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import {
   installationPropTypes,
@@ -15,8 +17,14 @@ import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 class Repository extends PureComponent {
   constructor(props) {
     super(props);
+    this.updateSearchParams();
 
-    this.state = { loading: true };
+    this.state = {
+      benchmarkId: '',
+      commitId: '',
+      loading: true,
+      testId: '',
+    };
   }
 
   componentDidMount() {
@@ -36,7 +44,9 @@ class Repository extends PureComponent {
   }
 
   verifyRequiredData() {
+    const { commitId, loading, testId } = this.state;
     const {
+      benchmarksByFilepath,
       fetchInstallations,
       fetchRepositoriesByInstallation,
       fetchTestsInRepository,
@@ -56,7 +66,7 @@ class Repository extends PureComponent {
                 // Check if tests have been fetched for this repository
                 switch (testsByRepository[this.repositoryId].status) {
                   case FETCHED:
-                    this.setState({ loaded: true });
+                    this.setState({ loading: false });
                     break;
                   case UNFETCHED:
                     fetchTestsInRepository(this.repositoryId);
@@ -77,16 +87,49 @@ class Repository extends PureComponent {
         break;
       default:
     }
+
+    if (!loading) {
+      // TODO: Select by newest
+      if (!commitId) {
+        this.setState({ commitId: Object.keys(benchmarksByFilepath[this.repositoryId])[0] });
+      }
+      if (!testId) {
+        this.setState({ testId: Object.keys(testsByRepository[this.repositoryId])[0] });
+      }
+    }
+  }
+
+  renderBenchmarks() {
+    const { benchmarkId, commitId, loading } = this.state;
+    const { benchmarksByFilepath, testsByBenchmark } = this.props;
+
+    if (loading || !commitId) {
+      return 'loading...';
+    }
+
+    return (
+      <BenchmarkBrowser
+        benchmarksByFilepath={benchmarksByFilepath[this.repositoryId][commitId]}
+        benchmarks={testsByBenchmark[this.repositoryId][commitId]}
+        onSelectBenchmark={id => this.setState({ benchmarkId: id })}
+        selected={benchmarkId}
+      />
+    );
   }
 
   render() {
+    const { repositories } = this.props;
     this.updateSearchParams();
-    const { loading } = this.state;
 
     return (
       <div className="page repository">
         <div className="page-container">
-          <h1>Repository</h1>
+          <h1>
+            Repository
+            {' '}
+            {get(repositories, [this.repositoryId, 'name'])}
+          </h1>
+          {this.renderBenchmarks()}
         </div>
       </div>
     );

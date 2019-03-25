@@ -1,0 +1,39 @@
+.benchmark-browser {
+  .col + .col {
+    border-left: 1px solid lightgrey;
+  }
+
+  .card-body {
+    height: 400px;
+
+    .col, .row {
+      height: 100%;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .iconedtext {
+      justify-content: center;
+    }
+
+    .list-group-item {
+      z-index: 0;
+    }
+  }
+
+  .mode {
+    display: flex;
+    margin-bottom: 10px;
+
+    .btn-group {
+      flex: auto;
+    }
+  }
+
+  .list-group-item {
+    cursor: pointer;
+  }
+}
