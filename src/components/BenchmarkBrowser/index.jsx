@@ -32,17 +32,19 @@ class BenchmarkBrowser extends PureComponent {
     const { benchmarks, onSelectBenchmark, selected } = this.props;
     return (
       <ListGroup>
-        {
-          map(benchmarks, (benchmark, benchmarkId) => (
-            <ListGroup.Item
-              key={benchmarkId}
-              active={selected === benchmarkId}
-              onClick={() => onSelectBenchmark(benchmarkId)}
-            >
-              {benchmarkId}
-            </ListGroup.Item>
-          ))
-        }
+        <Scrollbar>
+          {
+            map(benchmarks, (benchmark, benchmarkId) => (
+              <ListGroup.Item
+                key={benchmarkId}
+                active={selected === benchmarkId}
+                onClick={() => onSelectBenchmark(benchmarkId)}
+              >
+                {benchmarkId}
+              </ListGroup.Item>
+            ))
+          }
+        </Scrollbar>
       </ListGroup>
     );
   }
@@ -67,7 +69,11 @@ class BenchmarkBrowser extends PureComponent {
 
     const data = formatTree(benchmarksByFilepath);
 
-    return <Tree data={data} />;
+    return (
+      <Scrollbar>
+        <Tree data={data} />
+      </Scrollbar>
+    );
   }
 
   renderBenchmark() {
@@ -129,9 +135,7 @@ class BenchmarkBrowser extends PureComponent {
                     </Button>
                   </ButtonGroup>
                 </div>
-                <Scrollbar>
-                  {treeBrowser ? this.renderTree() : this.renderList()}
-                </Scrollbar>
+                {treeBrowser ? this.renderTree() : this.renderList()}
               </Col>
               <Col>
                 {this.renderBenchmark()}

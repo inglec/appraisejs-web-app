@@ -1,10 +1,10 @@
 .benchmark-browser {
-  .col + .col {
-    border-left: 1px solid lightgrey;
-  }
-
   .browser-container {
     height: 400px;
+
+    .col + .col {
+      border-left: 1px solid lightgrey;
+    }
 
     .card-body, .col, .row {
       height: 100%;
@@ -22,26 +22,26 @@
     .list-group-item {
       z-index: 0;
     }
-  }
 
-  .mode {
-    display: flex;
-    margin-bottom: 10px;
+    .mode {
+      display: flex;
+      margin-bottom: 10px;
 
-    .btn-group {
-      flex: auto;
+      .btn-group {
+        flex: auto;
+      }
     }
-  }
 
-  .list-group-item {
-    cursor: pointer;
-  }
+    .list-group-item {
+      cursor: pointer;
+    }
 
-  .unselected {
-    align-items: center;
-    color: grey;
-    display: flex;
-    height: 100%;
-    justify-content: center;
+    .unselected {
+      align-items: center;
+      color: grey;
+      display: flex;
+      height: 100%;
+      justify-content: center;
+    }
   }
 }
