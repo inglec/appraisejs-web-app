@@ -8,6 +8,7 @@ import {
   repositoryPropTypes,
   statusPropType,
   testPropTypes,
+  testsByBenchmarkPropTypes
 } from 'appraisejs-proptypes/redux';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 
@@ -94,6 +95,11 @@ class Repository extends PureComponent {
 
 Repository.propTypes = {
   ...routePropTypes,
+  benchmarksByFilepath: PropTypes.objectOf( // repositoryId
+    PropTypes.objectOf( // commitId
+      PropTypes.object,
+    ),
+  ).isRequired,
   fetchInstallations: PropTypes.func.isRequired,
   fetchReposInInstallation: PropTypes.func.isRequired,
   installations: PropTypes.exact({
@@ -118,13 +124,20 @@ Repository.propTypes = {
   tests: PropTypes.objectOf(
     PropTypes.exact(testPropTypes),
   ).isRequired,
+  testsByBenchmark: PropTypes.objectOf( // repositoryId
+    PropTypes.objectOf( // commitId
+      PropTypes.objectOf( // benchmarkId
+        PropTypes.exact(testsByBenchmarkPropTypes),
+      ),
+    ),
+  ),
   testsByRepository: PropTypes.objectOf(
     PropTypes.exact({
       status: statusPropType.isRequired,
 
       data: PropTypes.arrayOf(PropTypes.string),
       error: PropTypes.string,
-    })
+    }),
   ).isRequired,
 };
 

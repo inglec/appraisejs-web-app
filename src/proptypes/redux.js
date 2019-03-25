@@ -30,11 +30,17 @@ export const repositoryPropTypes = {
   description: PropTypes.string,
 };
 
+const benchmarkDefinitionPropTypes = {
+  maxAttempts: PropTypes.number.isRequired,
+  runs: PropTypes.number.isRequired,
+  timeout: PropTypes.number.isRequired,
+};
+
 export const testPropTypes = {
   benchmarks: PropTypes.objectOf(
     PropTypes.exact({
       attempts: PropTypes.arrayOf(
-        // Runs
+        // Array of runs
         PropTypes.arrayOf(
           PropTypes.oneOfType([
             PropTypes.exact({
@@ -48,11 +54,7 @@ export const testPropTypes = {
           ]),
         ),
       ),
-      benchmarkDefinition: PropTypes.exact({
-        maxAttempts: PropTypes.number.isRequired,
-        runs: PropTypes.number.isRequired,
-        timeout: PropTypes.number.isRequired,
-      }).isRequired,
+      benchmarkDefinition: PropTypes.exact(benchmarkDefinitionPropTypes).isRequired,
       filepath: PropTypes.string.isRequired,
 
       errors: PropTypes.arrayOf(PropTypes.string),
@@ -73,6 +75,12 @@ export const testPropTypes = {
       stage: PropTypes.string.isRequired,
     }),
   ),
+};
+
+export const testsByBenchmarkPropTypes = {
+  benchmarkDefinition: PropTypes.exact(benchmarkDefinitionPropTypes).isRequired,
+  filepath: PropTypes.string.isRequired,
+  tests: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export const userPropTypes = {

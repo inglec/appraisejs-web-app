@@ -7,18 +7,22 @@ import {
   fetchTestsInRepository,
 } from 'appraisejs-redux/actions';
 import {
+  selectBenchmarksByFilepath,
   selectInstallations,
   selectReposByInstallation,
   selectRepositories,
   selectTests,
+  selectTestsByBenchmark,
   selectTestsByRepository,
 } from 'appraisejs-redux/selectors';
 
 const mapStateToProps = state => ({
+  benchmarksByFilepath: selectBenchmarksByFilepath(state),
   installations: selectInstallations(state),
   reposByInstallation: selectReposByInstallation(state),
   repositories: selectRepositories(state),
   tests: selectTests(state),
+  testsByBenchmark: selectTestsByBenchmark(state),
   testsByRepository: selectTestsByRepository(state),
 });
 
