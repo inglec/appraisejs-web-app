@@ -67,7 +67,7 @@ export const fetchInstallations = () => {
   };
 };
 
-export const fetchRepositoriesByInstallation = (installationId) => {
+export const fetchRepositoryIdsByInstallation = (installationId) => {
   const failure = error => createAction(FETCH_REPOSITORIES_FAILURE, {
     key: installationId,
     error: error.toString(),

@@ -49,7 +49,7 @@ const installations = (state = createDataState(), action) => {
   }
 };
 
-const repositoriesByInstallation = (state = {}, action) => {
+const repositoryIdsByInstallation = (state = {}, action) => {
   switch (action.type) {
     case FETCH_REPOSITORIES_FAILURE:
       return {
@@ -108,7 +108,7 @@ const tests = (state = {}, action) => {
   }
 };
 
-const testsByRepository = (state = {}, action) => {
+const testIdsByRepository = (state = {}, action) => {
   switch (action.type) {
     case FETCH_REPOSITORIES_SUCCESS:
       return {
@@ -155,9 +155,9 @@ const user = (state = createDataState(), action) => {
 export default combineReducers({
   auth,
   installations,
-  repositoriesByInstallation,
+  repositoryIdsByInstallation,
   repositories,
   tests,
-  testsByRepository,
+  testIdsByRepository,
   user,
 });

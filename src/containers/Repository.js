@@ -3,33 +3,41 @@ import { connect } from 'react-redux';
 import Repository from 'appraisejs-components/Repository';
 import {
   fetchInstallations,
-  fetchRepositoriesByInstallation,
+  fetchRepositoryIdsByInstallation,
   fetchTestsInRepository,
 } from 'appraisejs-redux/actions';
 import {
-  selectBenchmarksByFilepath,
+  selectBenchmarksByCommit,
+  selectBenchmarkIdsByFilepath,
+  selectBenchmarkIdsByRepository,
+  selectCommitIdsByBenchmark,
   selectInstallations,
-  selectRepositoriesByInstallation,
+  selectRepositoryIdsByInstallation,
   selectRepositories,
   selectTests,
-  selectTestsByBenchmark,
-  selectTestsByRepository,
+  selectTestIdsByBenchmark,
+  selectTestIdsByCommit,
+  selectTestIdsByRepository,
 } from 'appraisejs-redux/selectors';
 
 const mapStateToProps = state => ({
-  benchmarksByFilepath: selectBenchmarksByFilepath(state),
+  benchmarksByCommit: selectBenchmarksByCommit(state),
+  benchmarkIdsByFilepath: selectBenchmarkIdsByFilepath(state),
+  benchmarkIdsByRepository: selectBenchmarkIdsByRepository(state),
+  commitIdsByBenchmark: selectCommitIdsByBenchmark(state),
   installations: selectInstallations(state),
-  repositoriesByInstallation: selectRepositoriesByInstallation(state),
+  repositoryIdsByInstallation: selectRepositoryIdsByInstallation(state),
   repositories: selectRepositories(state),
   tests: selectTests(state),
-  testsByBenchmark: selectTestsByBenchmark(state),
-  testsByRepository: selectTestsByRepository(state),
+  testIdsByBenchmark: selectTestIdsByBenchmark(state),
+  testIdsByCommit: selectTestIdsByCommit(state),
+  testIdsByRepository: selectTestIdsByRepository(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchInstallations: () => dispatch(fetchInstallations()),
-  fetchRepositoriesByInstallation: installationId => (
-    dispatch(fetchRepositoriesByInstallation(installationId))
+  fetchRepositoryIdsByInstallation: installationId => (
+    dispatch(fetchRepositoryIdsByInstallation(installationId))
   ),
   fetchTestsInRepository: repositoryId => dispatch(fetchTestsInRepository(repositoryId)),
 });

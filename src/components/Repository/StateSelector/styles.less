@@ -1,0 +1,25 @@
+.stateselector {
+  .stateselector-row {
+    display: flex;
+    max-height: 400px;
+    margin-bottom: 20px;
+    overflow: hidden;
+
+    & > * {
+      flex: 1 1 0;
+
+      & + * {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .stateselector-bottom {
+    display: flex;
+
+  }
+
+  .row + .row {
+    margin-top: 20px;
+  }
+}

@@ -5,6 +5,7 @@ import React from 'react';
 import HomeIcon from 'react-feather/dist/icons/home';
 import InstallationsIcon from 'react-feather/dist/icons/grid';
 import RepositoriesIcon from 'react-feather/dist/icons/book-open';
+import 'react-perfect-scrollbar/dist/css/styles';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Navbar from 'appraisejs-containers/Navbar';

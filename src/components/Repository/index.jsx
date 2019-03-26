@@ -1,18 +1,21 @@
+import { forEach } from 'lodash/collection';
 import { get } from 'lodash/object';
 import PropTypes from 'prop-types';
 import { parse } from 'query-string';
 import React, { PureComponent } from 'react';
 
-import BenchmarkBrowser from 'appraisejs-components/BenchmarkBrowser';
+import AttemptsTable from 'appraisejs-components/AttemptsTable';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import {
   installationPropTypes,
   repositoryPropTypes,
   statusPropType,
   testPropTypes,
-  testsByBenchmarkPropTypes,
 } from 'appraisejs-proptypes/redux';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
+
+
+import StateSelector from './StateSelector';
 
 class Repository extends PureComponent {
   constructor(props) {
@@ -35,6 +38,10 @@ class Repository extends PureComponent {
     this.verifyRequiredData();
   }
 
+  onSelectId(id, value) {
+    this.setState(prevState => ({ [id]: prevState[id] === value ? '' : value }));
+  }
+
   updateSearchParams() {
     const { location } = this.props;
     const { installationId, repositoryId } = parse(location.search);
@@ -44,27 +51,25 @@ class Repository extends PureComponent {
   }
 
   verifyRequiredData() {
-    const { commitId, loading, testId } = this.state;
     const {
-      benchmarksByFilepath,
       fetchInstallations,
-      fetchRepositoriesByInstallation,
+      fetchRepositoryIdsByInstallation,
       fetchTestsInRepository,
       installations,
-      repositoriesByInstallation,
-      testsByRepository,
+      repositoryIdsByInstallation,
+      testIdsByRepository,
     } = this.props;
 
     switch (installations.status) {
       case FETCHED:
         if (this.repositoryId && this.installationId) {
           // Check if repositoryId exists or it just hasn't been fetched yet
-          const installationRepositories = repositoriesByInstallation[this.installationId];
+          const installationRepositories = repositoryIdsByInstallation[this.installationId];
           switch (installationRepositories.status) {
             case FETCHED:
               if (installationRepositories.data.includes(this.repositoryId)) {
                 // Check if tests have been fetched for this repository
-                switch (testsByRepository[this.repositoryId].status) {
+                switch (testIdsByRepository[this.repositoryId].status) {
                   case FETCHED:
                     this.setState({ loading: false });
                     break;
@@ -76,7 +81,7 @@ class Repository extends PureComponent {
               }
               break;
             case UNFETCHED:
-              fetchRepositoriesByInstallation(this.installationId);
+              fetchRepositoryIdsByInstallation(this.installationId);
               break;
             default:
           }
@@ -87,33 +92,59 @@ class Repository extends PureComponent {
         break;
       default:
     }
-
-    if (!loading) {
-      // TODO: Select by newest
-      if (!commitId) {
-        this.setState({ commitId: Object.keys(benchmarksByFilepath[this.repositoryId])[0] });
-      }
-      if (!testId) {
-        this.setState({ testId: Object.keys(testsByRepository[this.repositoryId])[0] });
-      }
-    }
   }
 
   renderBenchmarks() {
-    const { benchmarkId, commitId, loading } = this.state;
-    const { benchmarksByFilepath, testsByBenchmark } = this.props;
+    const {
+      benchmarkId,
+      commitId,
+      loading,
+      testId,
+    } = this.state;
+    const {
+      benchmarkIdsByFilepath,
+      benchmarkIdsByRepository,
+      benchmarksByCommit,
+      commitIdsByBenchmark,
+      testIdsByBenchmark,
+      testIdsByCommit,
+      testIdsByRepository,
+      tests,
+    } = this.props;
 
-    if (loading || !commitId) {
+    if (loading) {
       return 'loading...';
     }
 
     return (
-      <BenchmarkBrowser
-        benchmarksByFilepath={benchmarksByFilepath[this.repositoryId][commitId]}
-        benchmarks={testsByBenchmark[this.repositoryId][commitId]}
-        onSelectBenchmark={id => this.setState({ benchmarkId: id })}
-        selected={benchmarkId}
-      />
+      <div>
+        <StateSelector
+          benchmarkId={benchmarkId}
+          benchmarkIdsByRepository={benchmarkIdsByRepository}
+          benchmarkIdsByFilepath={benchmarkIdsByFilepath}
+          benchmarksByCommit={benchmarksByCommit}
+          commitId={commitId}
+          commitIdsByBenchmark={commitIdsByBenchmark}
+          onSelectBenchmarkId={id => this.onSelectId('benchmarkId', id)}
+          onSelectCommitId={id => this.onSelectId('commitId', id)}
+          onSelectTestId={id => this.onSelectId('testId', id)}
+          repositoryId={this.repositoryId}
+          testId={testId}
+          testIdsByBenchmark={testIdsByBenchmark}
+          testIdsByCommit={testIdsByCommit}
+          testIdsByRepository={testIdsByRepository}
+          tests={tests}
+        />
+        {
+          // benchmarkId
+          //   ? (
+          //     <AttemptsTable
+          //       attempts={tests[testId].benchmarks[benchmarkId].attempts}
+          //     />
+          //   )
+          //   : null
+        }
+      </div>
     );
   }
 
@@ -138,13 +169,16 @@ class Repository extends PureComponent {
 
 Repository.propTypes = {
   ...routePropTypes,
-  benchmarksByFilepath: PropTypes.objectOf( // repositoryId
+  benchmarkIdsByFilepath: PropTypes.objectOf( // repositoryId
     PropTypes.objectOf( // commitId
       PropTypes.object,
     ),
   ).isRequired,
+  benchmarkIdsByRepository: PropTypes.objectOf( // repositoryId
+    PropTypes.arrayOf(PropTypes.string), // benchmarkIds
+  ).isRequired,
   fetchInstallations: PropTypes.func.isRequired,
-  fetchRepositoriesByInstallation: PropTypes.func.isRequired,
+  fetchRepositoryIdsByInstallation: PropTypes.func.isRequired,
   installations: PropTypes.exact({
     status: statusPropType.isRequired,
 
@@ -153,7 +187,7 @@ Repository.propTypes = {
     ),
     error: PropTypes.string,
   }).isRequired,
-  repositoriesByInstallation: PropTypes.objectOf(
+  repositoryIdsByInstallation: PropTypes.objectOf(
     PropTypes.exact({
       status: statusPropType.isRequired,
 
@@ -167,14 +201,12 @@ Repository.propTypes = {
   tests: PropTypes.objectOf(
     PropTypes.exact(testPropTypes),
   ).isRequired,
-  testsByBenchmark: PropTypes.objectOf( // repositoryId
-    PropTypes.objectOf( // commitId
-      PropTypes.objectOf( // benchmarkId
-        PropTypes.exact(testsByBenchmarkPropTypes),
-      ),
+  testIdsByBenchmark: PropTypes.objectOf( // repositoryId
+    PropTypes.objectOf( // benchmarkId
+      PropTypes.arrayOf(PropTypes.string), // testIds,
     ),
   ),
-  testsByRepository: PropTypes.objectOf(
+  testIdsByRepository: PropTypes.objectOf(
     PropTypes.exact({
       status: statusPropType.isRequired,
 

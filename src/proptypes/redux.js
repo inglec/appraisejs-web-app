@@ -77,12 +77,6 @@ export const testPropTypes = {
   ),
 };
 
-export const testsByBenchmarkPropTypes = {
-  benchmarkDefinition: PropTypes.exact(benchmarkDefinitionPropTypes).isRequired,
-  filepath: PropTypes.string.isRequired,
-  tests: PropTypes.arrayOf(PropTypes.string).isRequired,
-};
-
 export const userPropTypes = {
   avatarUrl: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
