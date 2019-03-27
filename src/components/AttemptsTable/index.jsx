@@ -36,10 +36,14 @@ const renderValue = (value) => {
   );
 };
 
-const renderRunRows = runs => runs.map(({ error, time, value }, i) => (
-  <td key={`run${i + 1}`}>
-    {
-      error
+const renderRunRows = (runs, maxRows) => {
+  const rows = [];
+  for (let i = 0; i < maxRows; i += 1) {
+    let content = '-';
+    if (i < runs.length) {
+      const { error, time, value } = runs[i];
+
+      content = error
         ? <div className="run-error">{error}</div>
         : (
           <div className="run-result">
@@ -49,10 +53,14 @@ const renderRunRows = runs => runs.map(({ error, time, value }, i) => (
               ms
             </div>
           </div>
-        )
+        );
     }
-  </td>
-));
+
+    rows.push(<td key={`run${i + 1}`}>{content}</td>);
+  }
+
+  return rows;
+};
 
 const AttemptsTable = ({ attempts }) => {
   // Find attempt with max number of runs
@@ -69,7 +77,7 @@ const AttemptsTable = ({ attempts }) => {
           attempts.map((runs, i) => (
             <tr key={`attempt${i + 1}`}>
               <td>{i + 1}</td>
-              {renderRunRows(runs)}
+              {renderRunRows(runs, maxRuns)}
             </tr>
           ))
         }
