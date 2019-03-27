@@ -1,10 +1,9 @@
-import { forEach } from 'lodash/collection';
 import { get } from 'lodash/object';
 import PropTypes from 'prop-types';
 import { parse } from 'query-string';
 import React, { PureComponent } from 'react';
+import Jumbotron from 'react-bootstrap/Jumbotron';
 
-import AttemptsTable from 'appraisejs-components/AttemptsTable';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
 import {
   installationPropTypes,
@@ -14,8 +13,10 @@ import {
 } from 'appraisejs-proptypes/redux';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 
-
+import BenchmarkTest from './pages/BenchmarkTest';
 import StateSelector from './StateSelector';
+
+import './styles';
 
 class Repository extends PureComponent {
   constructor(props) {
@@ -94,13 +95,8 @@ class Repository extends PureComponent {
     }
   }
 
-  renderBenchmarks() {
-    const {
-      benchmarkId,
-      commitId,
-      loading,
-      testId,
-    } = this.state;
+  renderStateSelector() {
+    const { benchmarkId, commitId, testId } = this.state;
     const {
       benchmarkIdsByFilepath,
       benchmarkIdsByRepository,
@@ -112,44 +108,52 @@ class Repository extends PureComponent {
       tests,
     } = this.props;
 
-    if (loading) {
-      return 'loading...';
+    return (
+      <StateSelector
+        benchmarkId={benchmarkId}
+        benchmarkIds={benchmarkIdsByRepository[this.repositoryId]}
+        benchmarkIdsByFilepath={benchmarkIdsByFilepath[this.repositoryId]}
+        benchmarksByCommit={benchmarksByCommit[this.repositoryId]}
+        commitId={commitId}
+        commitIdsByBenchmark={commitIdsByBenchmark[this.repositoryId]}
+        onSelectBenchmarkId={id => this.onSelectId('benchmarkId', id)}
+        onSelectCommitId={id => this.onSelectId('commitId', id)}
+        onSelectTestId={id => this.onSelectId('testId', id)}
+        testId={testId}
+        testIds={testIdsByRepository[this.repositoryId].data}
+        testIdsByBenchmark={testIdsByBenchmark[this.repositoryId]}
+        testIdsByCommit={testIdsByCommit[this.repositoryId]}
+        tests={tests}
+      />
+    );
+  }
+
+  renderConditionalContent() {
+    const { benchmarkId, commitId, testId } = this.state;
+    const { tests } = this.props;
+
+    // TODO: Add more pages by matching more combinations
+    if (benchmarkId) {
+      if (commitId) {
+        if (testId) {
+          return <BenchmarkTest benchmarkId={benchmarkId} test={tests[testId]} />;
+        }
+      }
     }
 
     return (
-      <div>
-        <StateSelector
-          benchmarkId={benchmarkId}
-          benchmarkIds={benchmarkIdsByRepository[this.repositoryId]}
-          benchmarkIdsByFilepath={benchmarkIdsByFilepath[this.repositoryId]}
-          benchmarksByCommit={benchmarksByCommit[this.repositoryId]}
-          commitId={commitId}
-          commitIdsByBenchmark={commitIdsByBenchmark[this.repositoryId]}
-          onSelectBenchmarkId={id => this.onSelectId('benchmarkId', id)}
-          onSelectCommitId={id => this.onSelectId('commitId', id)}
-          onSelectTestId={id => this.onSelectId('testId', id)}
-          testId={testId}
-          testIds={testIdsByRepository[this.repositoryId].data}
-          testIdsByBenchmark={testIdsByBenchmark[this.repositoryId]}
-          testIdsByCommit={testIdsByCommit[this.repositoryId]}
-          tests={tests}
-        />
-        {
-          // benchmarkId
-          //   ? (
-          //     <AttemptsTable
-          //       attempts={tests[testId].benchmarks[benchmarkId].attempts}
-          //     />
-          //   )
-          //   : null
-        }
-      </div>
+      <Jumbotron>
+        <h1>Select More Options</h1>
+        <p>There is currently nothing to display for this configuration</p>
+      </Jumbotron>
     );
   }
 
   render() {
-    const { repositories } = this.props;
     this.updateSearchParams();
+
+    const { loading } = this.state;
+    const { repositories } = this.props;
 
     return (
       <div className="page repository">
@@ -159,7 +163,16 @@ class Repository extends PureComponent {
             {' '}
             {get(repositories, [this.repositoryId, 'name'])}
           </h1>
-          {this.renderBenchmarks()}
+          {
+            loading
+              ? <p>Loading...</p>
+              : (
+                <div>
+                  {this.renderStateSelector()}
+                  {this.renderConditionalContent()}
+                </div>
+              )
+          }
         </div>
       </div>
     );

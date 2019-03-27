@@ -79,12 +79,7 @@ const AttemptsTable = ({ attempts }) => {
 };
 
 AttemptsTable.propTypes = {
-  // attempts: PropTypes.arrayOf(
-  //   // Runs
-  //   PropTypes.arrayOf(
-  //
-  //   )
-  // ),
+  attempts: PropTypes.array.isRequired,
 };
 
 export default AttemptsTable;
