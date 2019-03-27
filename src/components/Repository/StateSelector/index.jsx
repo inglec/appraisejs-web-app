@@ -83,12 +83,15 @@ const StateSelector = (props) => {
           {renderList('Tests', testIds, testId, onSelectTestId)}
         </div>
         <div className="stateselector-row stateselector-bottom">
-          <BenchmarkBrowser
-            benchmarkIds={benchmarkIds}
-            benchmarkIdsByFilepath={get(benchmarkIdsByFilepath, commitId, {})}
-            onSelectBenchmarkId={onSelectBenchmarkId}
-            selectedBenchmark={selectedBenchmark}
-          />
+          <div className="benchmarkbrowser-container">
+            <h5>Benchmarks</h5>
+            <BenchmarkBrowser
+              benchmarkIds={benchmarkIds}
+              benchmarkIdsByFilepath={get(benchmarkIdsByFilepath, commitId, {})}
+              onSelectBenchmarkId={onSelectBenchmarkId}
+              selectedBenchmark={selectedBenchmark}
+            />
+          </div>
         </div>
       </Card.Body>
     </Card>
