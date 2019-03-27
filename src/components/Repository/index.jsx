@@ -1,4 +1,4 @@
-import { get } from 'lodash/object';
+import { get, mapValues } from 'lodash/object';
 import { chain } from 'lodash';
 import PropTypes from 'prop-types';
 import { parse } from 'query-string';
@@ -15,6 +15,7 @@ import {
 import { retestCommit } from 'appraisejs-utils/appraisejs_supervisor';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 
+import Benchmark from './pages/Benchmark';
 import BenchmarkCommit from './pages/BenchmarkCommit';
 import BenchmarkTest from './pages/BenchmarkTest';
 import Commit from './pages/Commit';
@@ -166,6 +167,17 @@ class Repository extends PureComponent {
             tests={selectedTests}
           />
         );
+      }
+
+      if (!testId) {
+        const selectedTestsByCommit = mapValues(testIdsByCommit[this.repositoryId], testIds => (
+          chain(tests)
+            .pick(testIds)
+            .mapValues(test => test.benchmarks[benchmarkId])
+            .value()
+        ));
+
+        return <Benchmark benchmarkId={benchmarkId} testsByCommit={selectedTestsByCommit} />;
       }
     } else if (commitId) {
       if (!testId) {
