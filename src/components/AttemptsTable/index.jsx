@@ -37,26 +37,46 @@ const renderValue = (value) => {
 };
 
 const renderRunRows = (runs, maxRows) => {
-  const rows = [];
-  for (let i = 0; i < maxRows; i += 1) {
-    let content = '-';
-    if (i < runs.length) {
-      const { error, time, value } = runs[i];
-
-      content = error
-        ? <div className="run-error">{error}</div>
-        : (
-          <div className="run-result">
-            {value ? <div className="run-value">{renderValue(value)}</div> : null}
-            <div className="run-time">
-              {time}
-              ms
+  const rows = runs.map(({ error, time, value }, i) => (
+    <td key={`run${i + 1}`}>
+      {
+        error
+          ? (
+            <div className="run-error">
+              <b>Error</b>
+              {': '}
+              {error}
             </div>
-          </div>
-        );
-    }
+          )
+          : (
+            <div className="run-result">
+              {
+                value
+                  ? (
+                    <div className="run-value">
+                      <b>Value</b>
+                      {': '}
+                      {renderValue(value)}
+                    </div>
+                  )
+                  : null
+                }
+              <div className="run-time">
+                <b>Time</b>
+                {': '}
+                {Number(time).toLocaleString()}
+                ns
+              </div>
+            </div>
+          )
+      }
+    </td>
+  ));
 
-    rows.push(<td key={`run${i + 1}`}>{content}</td>);
+  const remainingRows = maxRows - runs.length;
+
+  if (remainingRows > 0) {
+    rows.push(<td key="abandoned" colSpan={1 + remainingRows}>-</td>);
   }
 
   return rows;
@@ -73,6 +93,8 @@ const AttemptsTable = ({ attempts }) => {
           <th>Attempt #</th>
           {renderRunHeadings(maxRuns)}
         </tr>
+      </thead>
+      <tbody>
         {
           attempts.map((runs, i) => (
             <tr key={`attempt${i + 1}`}>
@@ -81,7 +103,7 @@ const AttemptsTable = ({ attempts }) => {
             </tr>
           ))
         }
-      </thead>
+      </tbody>
     </Table>
   );
 };
