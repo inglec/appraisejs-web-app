@@ -120,19 +120,19 @@ class Repository extends PureComponent {
       <div>
         <StateSelector
           benchmarkId={benchmarkId}
-          benchmarkIdsByRepository={benchmarkIdsByRepository}
-          benchmarkIdsByFilepath={benchmarkIdsByFilepath}
-          benchmarksByCommit={benchmarksByCommit}
+          benchmarkIds={benchmarkIdsByRepository[this.repositoryId]}
+          benchmarkIdsByFilepath={benchmarkIdsByFilepath[this.repositoryId]}
+          benchmarksByCommit={benchmarksByCommit[this.repositoryId]}
           commitId={commitId}
-          commitIdsByBenchmark={commitIdsByBenchmark}
+          commitIdsByBenchmark={commitIdsByBenchmark[this.repositoryId]}
           onSelectBenchmarkId={id => this.onSelectId('benchmarkId', id)}
           onSelectCommitId={id => this.onSelectId('commitId', id)}
           onSelectTestId={id => this.onSelectId('testId', id)}
           repositoryId={this.repositoryId}
           testId={testId}
-          testIdsByBenchmark={testIdsByBenchmark}
-          testIdsByCommit={testIdsByCommit}
-          testIdsByRepository={testIdsByRepository}
+          testIds={testIdsByRepository[this.repositoryId].data}
+          testIdsByBenchmark={testIdsByBenchmark[this.repositoryId]}
+          testIdsByCommit={testIdsByCommit[this.repositoryId]}
           tests={tests}
         />
         {

@@ -34,46 +34,45 @@ const renderList = (title, items, selectedItem, onSelectItem) => (
 const StateSelector = (props) => {
   const {
     benchmarkId,
+    benchmarkIds: allBenchmarkIds,
     benchmarkIdsByFilepath,
-    benchmarkIdsByRepository,
     benchmarksByCommit,
     commitId,
     commitIdsByBenchmark,
     onSelectBenchmarkId,
     onSelectCommitId,
     onSelectTestId,
-    repositoryId,
     testId,
+    testIds: allTestIds,
     testIdsByBenchmark,
     testIdsByCommit,
-    testIdsByRepository,
     tests,
   } = props;
 
-  let benchmarkIds = benchmarkIdsByRepository[repositoryId];
+  let benchmarkIds = allBenchmarkIds;
   if (commitId || testId) {
     const id = testId ? tests[testId].commitId : commitId;
-    benchmarkIds = Object.keys(benchmarksByCommit[repositoryId][id]);
+    benchmarkIds = Object.keys(benchmarksByCommit[id]);
   }
 
-  let commitIds = Object.keys(testIdsByCommit[repositoryId]);
+  let commitIds = Object.keys(testIdsByCommit);
   if (testId) {
     commitIds = [tests[testId].commitId];
   } else if (benchmarkId) {
-    commitIds = commitIdsByBenchmark[repositoryId][benchmarkId];
+    commitIds = commitIdsByBenchmark[benchmarkId];
   }
 
-  let testIds = testIdsByRepository[repositoryId].data;
+  let testIds = allTestIds;
   if (benchmarkId) {
-    testIds = testIdsByBenchmark[repositoryId][benchmarkId];
+    testIds = testIdsByBenchmark[benchmarkId];
   }
   if (commitId) {
-    testIds = intersection(testIds, testIdsByCommit[repositoryId][commitId]);
+    testIds = intersection(testIds, testIdsByCommit[commitId]);
   }
 
   const selectedBenchmark = {
     benchmarkId,
-    ...get(benchmarksByCommit[repositoryId], [commitId, benchmarkId], {}),
+    ...get(benchmarksByCommit, [commitId, benchmarkId], {}),
   };
 
   return (
@@ -86,7 +85,7 @@ const StateSelector = (props) => {
         <div className="stateselector-row stateselector-bottom">
           <BenchmarkBrowser
             benchmarkIds={benchmarkIds}
-            benchmarkIdsByFilepath={get(benchmarkIdsByFilepath[repositoryId], commitId, {})}
+            benchmarkIdsByFilepath={get(benchmarkIdsByFilepath, commitId, {})}
             onSelectBenchmarkId={onSelectBenchmarkId}
             selectedBenchmark={selectedBenchmark}
           />
@@ -100,18 +99,17 @@ const StateSelector = (props) => {
 StateSelector.propTypes = {
   benchmarkId: PropTypes.any.isRequired,
   benchmarkIdsByFilepath: PropTypes.any.isRequired,
-  benchmarkIdsByRepository: PropTypes.any.isRequired,
+  benchmarkIds: PropTypes.any.isRequired,
   benchmarksByCommit: PropTypes.any.isRequired,
   commitId: PropTypes.any.isRequired,
   commitIdsByBenchmark: PropTypes.any.isRequired,
   onSelectBenchmarkId: PropTypes.func.isRequired,
   onSelectCommitId: PropTypes.func.isRequired,
   onSelectTestId: PropTypes.func.isRequired,
-  repositoryId: PropTypes.any.isRequired,
   testId: PropTypes.any.isRequired,
+  testIds: PropTypes.any.isRequired,
   testIdsByBenchmark: PropTypes.any.isRequired,
   testIdsByCommit: PropTypes.any.isRequired,
-  testIdsByRepository: PropTypes.any.isRequired,
   tests: PropTypes.any.isRequired,
 };
 
