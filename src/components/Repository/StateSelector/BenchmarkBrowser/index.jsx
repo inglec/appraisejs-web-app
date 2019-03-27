@@ -1,4 +1,5 @@
 import { map } from 'lodash/collection';
+import { isEmpty } from 'lodash/lang';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Alert from 'react-bootstrap/Alert';
@@ -25,6 +26,15 @@ class BenchmarkBrowser extends PureComponent {
     this.state = {
       treeBrowser: false,
     };
+  }
+
+  componentDidUpdate() {
+    const { benchmarkIdsByFilepath } = this.props;
+
+    if (isEmpty(benchmarkIdsByFilepath)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ treeBrowser: false });
+    }
   }
 
   useTreeBrowser(boolean) {
@@ -88,7 +98,7 @@ class BenchmarkBrowser extends PureComponent {
   }
 
   renderBenchmark() {
-    const { selectedBenchmark } = this.props;
+    const { benchmarkIdsByFilepath, selectedBenchmark } = this.props;
 
     if (!selectedBenchmark) {
       return <div className="unselected">Select a benchmark to begin</div>;
@@ -96,37 +106,50 @@ class BenchmarkBrowser extends PureComponent {
 
     const { benchmarkDefinition, filepath } = selectedBenchmark;
 
-    if (benchmarkDefinition && filepath) {
+    if (!(benchmarkDefinition && filepath)) {
+      const unselected = isEmpty(benchmarkIdsByFilepath) ? 'commit' : 'benchmark';
       return (
-        <div>
-          <Alert variant="info">
-            <b>Filepath</b>
-            {': '}
-            {filepath}
-          </Alert>
-          <Card>
-            <Card.Body>
-              <Card.Title>Benchmark Definition</Card.Title>
-              {
-                map(benchmarkDefinition, (value, key) => (
-                  <Card.Text key={key}>
-                    <b>{key}</b>
-                    {': '}
-                    {key === 'timeout' ? `${value}ms` : value}
-                  </Card.Text>
-                ))
-              }
-            </Card.Body>
-          </Card>
+        <div className="unselected">
+          <span>
+            Select a
+            {' '}
+            <b>{unselected}</b>
+            {' '}
+            in order to view benchmark definitions
+          </span>
         </div>
       );
     }
 
-    return <p>Cannot render definition</p>;
+    return (
+      <div>
+        <Alert variant="info">
+          <b>Filepath</b>
+          {': '}
+          {filepath}
+        </Alert>
+        <Card>
+          <Card.Body>
+            <Card.Title>Benchmark Definition</Card.Title>
+            {
+              map(benchmarkDefinition, (value, key) => (
+                <Card.Text key={key}>
+                  <b>{key}</b>
+                  {': '}
+                  {key === 'timeout' ? `${value}ms` : value}
+                </Card.Text>
+              ))
+            }
+          </Card.Body>
+        </Card>
+      </div>
+    );
   }
 
   render() {
     const { treeBrowser } = this.state;
+    const { benchmarkIdsByFilepath } = this.props;
+
     return (
       <Card className="benchmarkbrowser">
         <Card.Body>
@@ -144,6 +167,7 @@ class BenchmarkBrowser extends PureComponent {
                   <Button
                     variant="outline-primary"
                     active={treeBrowser}
+                    disabled={isEmpty(benchmarkIdsByFilepath)}
                     onClick={() => this.setState({ treeBrowser: true })}
                   >
                     <IconedText icon={TreeIcon}>File Tree</IconedText>
@@ -164,20 +188,14 @@ class BenchmarkBrowser extends PureComponent {
 
 BenchmarkBrowser.propTypes = {
   benchmarkIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onSelectBenchmarkId: PropTypes.func.isRequired,
-
-  benchmarkIdsByFilepath: PropTypes.object,
+  benchmarkIdsByFilepath: PropTypes.object.isRequired,
   selectedBenchmark: PropTypes.exact({
     benchmarkId: PropTypes.string.isRequired,
 
     benchmarkDefinition: PropTypes.object,
     filepath: PropTypes.string,
-  }),
-};
-
-BenchmarkBrowser.defaultProps = {
-  benchmarkIdsByFilepath: null,
-  selectedBenchmark: null,
+  }).isRequired,
+  onSelectBenchmarkId: PropTypes.func.isRequired,
 };
 
 export default BenchmarkBrowser;

@@ -128,7 +128,6 @@ class Repository extends PureComponent {
           onSelectBenchmarkId={id => this.onSelectId('benchmarkId', id)}
           onSelectCommitId={id => this.onSelectId('commitId', id)}
           onSelectTestId={id => this.onSelectId('testId', id)}
-          repositoryId={this.repositoryId}
           testId={testId}
           testIds={testIdsByRepository[this.repositoryId].data}
           testIdsByBenchmark={testIdsByBenchmark[this.repositoryId]}
