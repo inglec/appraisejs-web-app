@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Scrollbar from 'react-perfect-scrollbar';
 
-import BenchmarkBrowser from './BenchmarkBrowser';
+import BenchmarkBrowser from 'appraisejs-components/BenchmarkBrowser';
 
 import './styles';
 
