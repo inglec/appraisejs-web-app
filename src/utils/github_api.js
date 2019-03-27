@@ -2,19 +2,10 @@ import axios from 'axios';
 
 import { appendUrlParams } from 'appraisejs-utils/requests';
 
-import { clientId, urls } from 'appraisejs-root/config';
+import { clientId } from 'appraisejs-root/config';
 
 export const GITHUB_API_URL = 'https://api.github.com';
 export const GITHUB_APPS_MEDIA_TYPE = 'application/vnd.github.machine-man-preview+json';
-
-export const getAccessToken = code => (
-  axios({
-    method: 'POST',
-    baseURL: urls.appraisejs.supervisor.base,
-    url: urls.appraisejs.supervisor.paths.getAccessToken,
-    data: { code },
-  })
-);
 
 export const getInstallationRepos = (tokenType, token, installationId) => (
   axios({

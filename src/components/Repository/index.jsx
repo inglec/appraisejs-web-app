@@ -1,4 +1,5 @@
 import { get } from 'lodash/object';
+import { chain } from 'lodash';
 import PropTypes from 'prop-types';
 import { parse } from 'query-string';
 import React, { PureComponent } from 'react';
@@ -11,9 +12,12 @@ import {
   statusPropType,
   testPropTypes,
 } from 'appraisejs-proptypes/redux';
+import { retestCommit } from 'appraisejs-utils/appraisejs_supervisor';
 import { FETCHED, UNFETCHED } from 'appraisejs-utils/redux';
 
+import BenchmarkCommit from './pages/BenchmarkCommit';
 import BenchmarkTest from './pages/BenchmarkTest';
+import Commit from './pages/Commit';
 import StateSelector from './StateSelector';
 
 import './styles';
@@ -95,6 +99,17 @@ class Repository extends PureComponent {
     }
   }
 
+  retestCommit(commitId) {
+    const { repositories } = this.props;
+
+    const {
+      name: repositoryName,
+      owner: { login: owner },
+    } = repositories[this.repositoryId];
+
+    retestCommit(this.installationId, owner, this.repositoryId, repositoryName, commitId);
+  }
+
   renderStateSelector() {
     const { benchmarkId, commitId, testId } = this.state;
     const {
@@ -130,7 +145,7 @@ class Repository extends PureComponent {
 
   renderConditionalContent() {
     const { benchmarkId, commitId, testId } = this.state;
-    const { tests } = this.props;
+    const { tests, testIdsByCommit } = this.props;
 
     // TODO: Add more pages by matching more combinations
     if (benchmarkId) {
@@ -138,6 +153,23 @@ class Repository extends PureComponent {
         if (testId) {
           return <BenchmarkTest benchmarkId={benchmarkId} test={tests[testId]} />;
         }
+
+        const selectedTests = chain(tests)
+          .pick(testIdsByCommit[this.repositoryId][commitId])
+          .mapValues(test => test.benchmarks[benchmarkId])
+          .value();
+
+        return (
+          <BenchmarkCommit
+            benchmarkId={benchmarkId}
+            commitId={commitId}
+            tests={selectedTests}
+          />
+        );
+      }
+    } else if (commitId) {
+      if (!testId) {
+        return <Commit commitId={commitId} onClickRetest={() => this.retestCommit(commitId)} />;
       }
     }
 

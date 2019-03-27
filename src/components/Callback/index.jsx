@@ -7,7 +7,7 @@ import { Redirect } from 'react-router-dom';
 
 import Spinner from 'appraisejs-components/Spinner';
 import { routePropTypes } from 'appraisejs-proptypes/react_router';
-import { getAccessToken } from 'appraisejs-utils/github_api';
+import { getAccessToken } from 'appraisejs-utils/appraisejs_supervisor';
 
 import './styles';
 
